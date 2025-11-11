@@ -1,0 +1,20 @@
+{
+  "name": "lyrictype",
+  "version": "1.0.0",
+  "description": "lyrictype backend",
+  "license": "ISC",
+  "author": "chukwunweike",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mongodb": "^6.20.0"
+  }
+}

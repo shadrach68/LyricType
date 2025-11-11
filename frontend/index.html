@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LyricType - Type Your Favorite Songs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-title">🎵 LyricType</h1>
+      </div>
+      <ul class="sidebar-nav">
+        <li>
+          <button class="sidebar-btn" id="tutorialBtn">
+            <span class="sidebar-icon">🎓</span>
+            <span class="sidebar-text">Tutorial</span>
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-btn" id="themeToggleBtn">
+            <span class="sidebar-icon" id="themeIcon">🌙</span>
+            <span class="sidebar-text" id="themeText">Dark Mode</span>
+          </button>
+        </li>
+        <li id="profileBtnContainer">
+          <button class="sidebar-btn" id="profileBtn">
+            <span class="sidebar-icon">📊</span>
+            <span class="sidebar-text">My Profile</span>
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-btn" id="accountBtn">
+            <span class="sidebar-icon">👤</span>
+            <span class="sidebar-text">Login</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="main-content" id="mainContent">
+      <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+      <div class="container">
+        <div class="header fade-in">
+          <h1>Practice Typing</h1>
+          <p>Hone your skills with your favorite song lyrics!</p>
+        </div>
+      <div class="song-selector fade-in" id="songSelector">
+        <h2>Choose Your Song</h2>
+
+        <div class="search-section">
+          <div class="search-row">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="Search for a song or artist..."
+            />
+            <button class="btn btn-primary" id="searchBtn">🔍 Search</button>
+          </div>
+
+          <div class="center-row">
+            <div class="difficulty-container">
+              <span class="difficulty-label">🎯 Difficulty:</span>
+              <button class="difficulty-filter easy" data-difficulty="easy">
+                Easy (5 min)
+              </button>
+              <button class="difficulty-filter medium" data-difficulty="medium">
+                Medium (3 min)
+              </button>
+              <button class="difficulty-filter hard" data-difficulty="hard">
+                Hard (2 min)
+              </button>
+            </div>
+          </div>
+
+          <div class="centered">
+            <button class="btn btn-secondary" id="addCustomBtn">
+              ➕ Add Custom Song
+            </button>
+          </div>
+        </div>
+
+        <div class="song-grid" id="songGrid">
+          <!-- Songs will be populated here -->
+        </div>
+      </div>
+
+      <div class="typing-area fade-in" id="typingArea">
+        <div class="stats-bar slide-in-left">
+          <div class="stat-card">
+            <div class="stat-value" id="wpmStat">0</div>
+            <div class="stat-label">WPM</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="accuracyStat">100%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="progressStat">0%</div>
+            <div class="stat-label">Progress</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="timeStat">0:00</div>
+            <div class="stat-label">Time Left</div>
+          </div>
+        </div>
+
+        <div class="progress-bar fade-in">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="lyrics-display scale-in" id="lyricsDisplay">
+          <!-- Lyrics will appear here -->
+        </div>
+
+        <input
+          type="text"
+          class="typing-input slide-in-right"
+          id="typingInput"
+          placeholder="Start typing the lyrics..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+
+        <div class="controls fade-in">
+          <button class="btn btn-secondary" id="restartBtn">🔄 Restart</button>
+          <button class="btn btn-secondary" id="pauseBtn">⏸️ Pause</button>
+          <button class="btn btn-secondary" id="backBtn">
+            ⬅️ Back to Songs
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="completion-modal" id="completionModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="completionModal">×</button>
+        <h2>🎉 Song Complete!</h2>
+        <div id="finalStats"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="tryAgainBtn">Try Again</button>
+          <button class="btn btn-secondary" id="newSongBtn">New Song</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="completion-modal" id="customSongModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="customSongModal">×</button>
+        <h2>🎵 Add Custom Song</h2>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Song Title:</label>
+            <input
+              type="text"
+              id="customTitle"
+              class="form-input"
+              placeholder="Enter song title..."
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Artist:</label>
+            <input
+              type="text"
+              id="customArtist"
+              class="form-input"
+              placeholder="Enter artist name..."
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="customDifficulty">Difficulty:</label>
+            <select id="customDifficulty" class="form-select">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Lyrics:</label>
+            <textarea
+              id="customLyrics"
+              class="form-textarea"
+              placeholder="Paste or type the lyrics here..."
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="saveSongBtn">💾 Save Song</button>
+          <button class="btn btn-secondary" id="cancelSongBtn">
+            ❌ Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="completion-modal" id="loginModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="loginModal">×</button>
+        <h2>👤 Login</h2>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Username:</label>
+            <div class="password-wrapper">
+              <input
+                type="text"
+                id="loginUsername"
+                class="form-input"
+                placeholder="Enter your username..."
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password:</label>
+            <div class="password-wrapper">
+              <input
+                type="password"
+                id="loginPassword"
+                class="form-input"
+                placeholder="Enter your password..."
+              />
+              <button class="toggle-password">👁️</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="loginSubmitBtn">Login</button>
+          <button class="btn btn-secondary" id="showRegisterBtn">
+            Create Account
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="completion-modal" id="registerModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="registerModal">×</button>
+        <h2>✨ Create Account</h2>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Username:</label>
+            <div class="password-wrapper">
+              <input type="text" id="registerUsername" class="form-input" title="registerUsername"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password:</label>
+            <div class="password-wrapper">
+              <input type="password" id="registerPassword" class="form-input" title="registerPassword"/>
+              <button class="toggle-password">👁️</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="registerSubmitBtn">
+            Register
+          </button>
+          <button class="btn btn-secondary" id="showLoginBtn">
+            Back to Login
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="completion-modal" id="logoutConfirmModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="logoutConfirmModal">×</button>
+        <h2>👋 Confirm Logout</h2>
+        <div class="modal-body">
+          <p>Are you sure you want to log out?</p>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-danger" id="confirmLogoutBtn">Logout</button>
+          <button class="btn btn-secondary" id="cancelLogoutBtn">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="completion-modal" id="profileModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="profileModal">×</button>
+        <h2>📊 My Profile</h2>
+        <div class="modal-body" id="profileBody">
+          <!-- Profile stats will be loaded here -->
+          <div class="profile-loading">Loading profile data...</div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-secondary" id="closeProfileBtn">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div class="completion-modal" id="tutorialModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="tutorialModal">×</button>
+        <h2>🎓 Typing Tutorial</h2>
+        <div class="modal-body tutorial-content">
+            <h3>Posture for Healthy Typing</h3>
+            <img
+              src="images/sitting.jpg"
+              alt="Correct typing posture diagram"
+              class="tutorial-image"
+            />
+          <ul>
+            <li>
+              <strong>Sit up straight:</strong> Keep your back straight and your
+              shoulders back. Your upper arms should be close to your body.
+            </li>
+            <li>
+              <strong>Feet flat on the floor:</strong> Ensure your feet are flat
+              on the floor or on a footrest.
+            </li>
+            <li>
+              <strong>Elbows at 90 degrees:</strong> Adjust your chair height so
+              your elbows are at a 90-degree angle.
+            </li>
+            <li>
+              <strong>Wrists straight:</strong> Keep your wrists straight, not
+              bent up, down, or to the sides.
+            </li>
+          </ul>
+          <hr />
+          <h3>Finger Placement (Home Row)</h3>
+            <img
+              src="images/fingers.jpg"
+              alt="Keyboard home row finger placement"
+              class="tutorial-image"
+            />
+          <p>
+            Place your fingers on the "home row" keys to begin. Your left-hand
+            fingers go on <strong>A, S, D, F</strong> and your right-hand
+            fingers on <strong>J, K, L, ;</strong>. Both thumbs should rest on
+            the spacebar. This is your starting position for all typing.
+          </p>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="closeTutorialBtn">Got It!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile notice (shown only on small viewports via CSS) -->
+    <div
+      class="mobile-notice"
+      role="dialog"
+      aria-live="polite"
+      aria-hidden="true"
+    >
+      <div class="mobile-notice-card">
+        <div class="mobile-notice-emoji">📱</div>
+        <h2 class="mobile-notice-title">
+          LyricType looks best on larger screens
+        </h2>
+        <p class="mobile-notice-desc">
+          For the best typing experience, please open LyricType on a tablet or
+          desktop. Larger screens give you more space to type and make the
+          animations and stats more comfortable to use.
+        </p>
+        <div class="mobile-notice-actions">
+          <p class="desktop-link-text">lyrictype.com</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
