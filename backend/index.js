@@ -22,7 +22,7 @@ async function setupSession() {
   await connectDb(); // Ensure DB is connected before setting up session store
   app.use(
     session({
-      secret: process.env.SECRET, 
+      secret: process.env.SECRET,
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({
@@ -312,8 +312,8 @@ async function startServer() {
   app.use(express.static(path.join(__dirname, "../frontend")));
 
   // Start the server
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server is running on port ${PORT}`);
   });
 }
 
