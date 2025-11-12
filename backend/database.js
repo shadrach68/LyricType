@@ -8,7 +8,7 @@ let db;
 export async function connectDb() {
   if (db) return db;
   await client.connect();
-  db = client.db("lyrictype"); // We'll name our database 'lyrictype'
+  db = client.db("lyrictype"); 
   console.log("Connected to MongoDB.");
   return db;
 }
