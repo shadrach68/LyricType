@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <canvas id="background-animation"></canvas>
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <h1 class="sidebar-title">🎵 LyricType</h1>
@@ -19,9 +20,15 @@
           </button>
         </li>
         <li>
-          <button class="sidebar-btn" id="themeToggleBtn">
-            <span class="sidebar-icon" id="themeIcon">🌙</span>
-            <span class="sidebar-text" id="themeText">Dark Mode</span>
+          <button class="sidebar-btn" id="trainingBtn">
+            <span class="sidebar-icon">⌨️</span>
+            <span class="sidebar-text">Training</span>
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-btn" id="settingsBtn">
+            <span class="sidebar-icon">⚙️</span>
+            <span class="sidebar-text">Settings</span>
           </button>
         </li>
         <li id="profileBtnContainer">
@@ -67,10 +74,10 @@
                 Easy (5 min)
               </button>
               <button class="difficulty-filter medium" data-difficulty="medium">
-                Medium (3 min)
+                Medium (3 min) <span class="lock-icon">🔒</span>
               </button>
               <button class="difficulty-filter hard" data-difficulty="hard">
-                Hard (2 min)
+                Hard (2 min) <span class="lock-icon">🔒</span>
               </button>
             </div>
           </div>
@@ -100,6 +107,10 @@
           <div class="stat-card">
             <div class="stat-value" id="progressStat">0%</div>
             <div class="stat-label">Progress</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="errorsStat">0</div>
+            <div class="stat-label">Errors</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="timeStat">0:00</div>
@@ -132,6 +143,115 @@
           </button>
         </div>
       </div>
+
+      <!-- Training Menu -->
+      <div class="training-menu" id="trainingMenu">
+          <h2>Typing Lessons</h2>
+          <div class="lesson-grid" id="lessonGrid"></div>
+          <button class="btn btn-secondary" id="backToSongsFromMenu">⬅️ Back to Songs</button>
+      </div>
+
+      <!-- Training Area -->
+      <div class="training-area" id="trainingArea">
+        <div class="training-header">
+          <h2>Typing Training</h2>
+          <p id="trainingInstructions">
+            Learn to type! Follow the highlighted keys.
+          </p>
+        </div>
+        <div class="stats-bar">
+          <div class="stat-card">
+            <div class="stat-value" id="trainingWpmStat">0</div>
+            <div class="stat-label">WPM</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="trainingAccuracyStat">100%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="trainingErrorsStat">0</div>
+            <div class="stat-label">Errors</div>
+          </div>
+        </div>
+        <div class="training-text-display" id="trainingTextDisplay">
+          <!-- Training text will appear here -->
+        </div>
+        <div class="keyboard" id="keyboard">
+          <!-- Keyboard will be generated here -->
+          <div class="keyboard-row">
+            <div class="key finger-left-pinky" data-key="`">~<br />`</div>
+            <div class="key finger-left-pinky" data-key="1">!<br />1</div>
+            <div class="key finger-left-ring" data-key="2">@<br />2</div>
+            <div class="key finger-left-middle" data-key="3">#<br />3</div>
+            <div class="key finger-left-index" data-key="4">$<br />4</div>
+            <div class="key finger-left-index" data-key="5">%<br />5</div>
+            <div class="key finger-right-index" data-key="6">^<br />6</div>
+            <div class="key finger-right-index" data-key="7">&<br />7</div>
+            <div class="key finger-right-middle" data-key="8">*<br />8</div>
+            <div class="key finger-right-ring" data-key="9">(<br />9</div>
+            <div class="key finger-right-pinky" data-key="0">)<br />0</div>
+            <div class="key finger-right-pinky" data-key="-">_<br />-</div>
+            <div class="key finger-right-pinky" data-key="=">+<br />=</div>
+            <div class="key key-wide finger-right-pinky" data-key="Backspace">Backspace</div>
+          </div>
+          <div class="keyboard-row">
+            <div class="key key-wide finger-left-pinky" data-key="Tab">Tab</div>
+            <div class="key finger-left-pinky" data-key="q">Q</div><div class="key finger-left-ring" data-key="w">W</div><div class="key finger-left-middle" data-key="e">E</div><div class="key finger-left-index" data-key="r">R</div><div class="key finger-left-index" data-key="t">T</div><div class="key finger-right-index" data-key="y">Y</div><div class="key finger-right-index" data-key="u">U</div><div class="key finger-right-middle" data-key="i">I</div><div class="key finger-right-ring" data-key="o">O</div><div class="key finger-right-pinky" data-key="p">P</div>
+            <div class="key finger-right-pinky" data-key="[">{<br />[</div><div class="key finger-right-pinky" data-key="]">}<br />]</div><div class="key key-wide finger-right-pinky" data-key="\">|<br />\</div>
+          </div>
+          <div class="keyboard-row">
+            <div class="key key-wide finger-left-pinky" data-key="CapsLock">Caps Lock</div>
+            <div class="key finger-left-pinky" data-key="a">A</div><div class="key finger-left-ring" data-key="s">S</div><div class="key finger-left-middle" data-key="d">D</div><div class="key finger-left-index" data-key="f">F</div><div class="key finger-left-index" data-key="g">G</div><div class="key finger-right-index" data-key="h">H</div><div class="key finger-right-index" data-key="j">J</div><div class="key finger-right-middle" data-key="k">K</div><div class="key finger-right-ring" data-key="l">L</div>
+            <div class="key finger-right-pinky" data-key=";">:<br />;</div><div class="key finger-right-pinky" data-key="'">"<br />'</div>
+            <div class="key key-wide finger-right-pinky" data-key="Enter">Enter</div>
+          </div>
+          <div class="keyboard-row">
+            <div class="key key-wide finger-left-pinky" data-key="ShiftLeft">Shift</div>
+            <div class="key finger-left-pinky" data-key="z">Z</div><div class="key finger-left-ring" data-key="x">X</div><div class="key finger-left-middle" data-key="c">C</div><div class="key finger-left-index" data-key="v">V</div><div class="key finger-left-index" data-key="b">B</div><div class="key finger-right-index" data-key="n">N</div><div class="key finger-right-index" data-key="m">M</div>
+            <div class="key finger-right-middle" data-key=",">&lt;<br />,</div><div class="key finger-right-ring" data-key=".">&gt;<br />.</div><div class="key finger-right-pinky" data-key="/">?<br />/</div>
+            <div class="key key-wide finger-right-pinky" data-key="ShiftRight">Shift</div>
+          </div>
+          <div class="keyboard-row">
+            <div class="key key-space finger-thumb" data-key=" "></div>
+          </div>
+        </div>
+        <div class="finger-guide" id="fingerGuide">
+          <div class="hand" id="left-hand">
+            <div class="finger" id="finger-left-pinky">Pinky</div>
+            <div class="finger" id="finger-left-ring">Ring</div>
+            <div class="finger" id="finger-left-middle">Middle</div>
+            <div class="finger" id="finger-left-index">Index</div>
+            <div class="finger thumb" id="finger-left-thumb">Thumb</div>
+          </div>
+          <div class="hand" id="right-hand">
+            <div class="finger thumb" id="finger-right-thumb">Thumb</div>
+            <div class="finger" id="finger-right-index">Index</div>
+            <div class="finger" id="finger-right-middle">Middle</div>
+            <div class="finger" id="finger-right-ring">Ring</div>
+            <div class="finger" id="finger-right-pinky">Pinky</div>
+          </div>
+        </div>
+        <div class="controls fade-in">
+          <button class="btn btn-secondary" id="restartTrainingBtn">🔄 Restart Lesson</button>
+          <button class="btn btn-secondary" id="pauseTrainingBtn">⏸️ Pause</button>
+          <button class="btn btn-secondary" id="backToTrainingMenu">⬅️ Back to Lessons</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Training Completion Modal -->
+    <div class="completion-modal" id="trainingCompletionModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="trainingCompletionModal">×</button>
+        <h2>🎉 Lesson Complete!</h2>
+        <div id="trainingFinalStats">
+          <!-- Final training stats will be populated here -->
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="restartTrainingFromModalBtn">🔄 Restart Lesson</button>
+          <button class="btn btn-secondary" id="backToMenuFromModalBtn">⬅️ Back to Lessons</button>
+        </div>
+      </div>
     </div>
 
     <div class="completion-modal" id="completionModal">
@@ -142,6 +262,22 @@
         <div class="modal-actions">
           <button class="btn btn-primary" id="tryAgainBtn">Try Again</button>
           <button class="btn btn-secondary" id="newSongBtn">New Song</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Song Start Confirmation Modal -->
+    <div class="completion-modal" id="songStartConfirmModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="songStartConfirmModal">×</button>
+        <h2 id="confirmSongTitle"></h2>
+        <p id="confirmSongArtist" class="final-subtitle"></p>
+        <div class="modal-body" id="songChallengeBody">
+          <!-- Challenges will be populated here -->
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="confirmStartBtn">🚀 Start Typing</button>
+          <button class="btn btn-secondary" id="cancelStartBtn">Back</button>
         </div>
       </div>
     </div>
@@ -227,6 +363,9 @@
               <button class="toggle-password">👁️</button>
             </div>
           </div>
+          <div class="form-group text-right">
+            <a href="#" id="showForgotPasswordBtn" class="form-link">Forgot Password?</a>
+          </div>
         </div>
         <div class="modal-actions modal-actions-center">
           <button class="btn btn-primary" id="loginSubmitBtn">Login</button>
@@ -250,6 +389,12 @@
             </div>
           </div>
           <div class="form-group">
+            <label class="form-label">Email:</label>
+            <div class="password-wrapper">
+              <input type="email" id="registerEmail" class="form-input" title="registerEmail"/>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="form-label">Password:</label>
             <div class="password-wrapper">
               <input type="password" id="registerPassword" class="form-input" title="registerPassword"/>
@@ -264,6 +409,64 @@
           <button class="btn btn-secondary" id="showLoginBtn">
             Back to Login
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forgot Password Request Modal -->
+    <div class="completion-modal" id="forgotPasswordModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="forgotPasswordModal">×</button>
+        <h2>🔑 Reset Password</h2>
+        <div class="modal-body">
+          <p>Enter your account's email address and we will send you a password reset link.</p>
+          <div class="form-group">
+            <label class="form-label">Email:</label>
+            <input
+              type="email"
+              id="forgotEmail"
+              class="form-input"
+              placeholder="Enter your email..."
+            />
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="forgotPasswordSubmitBtn">Get Reset Link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actual Password Reset Modal -->
+    <div class="completion-modal" id="resetPasswordWithTokenModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="resetPasswordWithTokenModal">×</button>
+        <h2>🔒 Reset Your Password</h2>
+        <div class="modal-body">
+          <p>Please enter the 6-digit code sent to your email address.</p>
+          <div class="form-group">
+            <label class="form-label">Reset Code:</label>
+            <div class="password-wrapper">
+              <input type="text" id="resetTokenInput" class="form-input" placeholder="Enter 6-digit code..." maxlength="6" />
+            </div>
+          </div>
+          <hr class="form-divider">
+          <div class="form-group">
+            <label class="form-label">New Password:</label>
+            <div class="password-wrapper">
+              <input type="password" id="resetTokenPassword" class="form-input" title="passwordResetToken" />
+              <button class="toggle-password">👁️</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Password:</label>
+            <div class="password-wrapper">
+              <input type="password" id="resetTokenConfirmPassword" class="form-input" title="passwordResetConfirm" />
+              <button class="toggle-password">👁️</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="resetPasswordWithTokenSubmitBtn">Reset Password</button>
         </div>
       </div>
     </div>
@@ -297,6 +500,92 @@
         <div class="modal-actions modal-actions-center">
           <button class="btn btn-secondary" id="closeProfileBtn">
             Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="completion-modal" id="settingsModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="settingsModal">×</button>
+        <h2>⚙️ Settings</h2>
+        <div class="modal-body">
+          <!-- Theme Settings -->
+          <div class="settings-section">
+            <h3>Theme</h3>
+            <div class="theme-selector">
+              <button class="btn" id="theme-light-btn">☀️ Light</button>
+              <button class="btn" id="theme-dark-btn">🌙 Dark</button>
+            </div>
+          </div>
+
+          <!-- Password Reset -->
+          <div class="settings-section">
+            <h3>Reset Password</h3>
+            <div class="form-group">
+              <label class="form-label">Old Password:</label>
+              <div class="password-wrapper">
+                <input type="password" title = "form-input" id="oldPassword" class="form-input" />
+                <button class="toggle-password">👁️</button>
+              </div>
+            </div>
+          <div class="form-group">
+              <label class="form-label">New Password:</label>
+              <div class="password-wrapper">
+                <input type="password" title = "form-input" id="newPassword" class="form-input" />
+                <button class="toggle-password">👁️</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password:</label>
+              <div class="password-wrapper">
+                <input type="password" title = "form-input" id="confirmNewPassword" class="form-input" />
+                <button class="toggle-password">👁️</button>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="resetPasswordBtn">Update Password</button>
+          </div>
+
+          <!-- Delete Account -->
+          <div class="settings-section">
+            <h3>Account Deletion</h3>
+            <p>This action is irreversible. All your data, including scores and progress, will be permanently deleted.</p>
+            <button class="btn btn-danger" id="deleteAccountBtn">Delete My Account</button>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-secondary" id="closeSettingsBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Account Confirmation Modal -->
+    <div class="completion-modal" id="deleteAccountConfirmModal">
+      <div class="modal-content">
+        <button class="modal-close-btn" data-modal-id="deleteAccountConfirmModal">×</button>
+        <h2>⚠️ Confirm Deletion</h2>
+        <div class="modal-body">
+          <p>This is your final warning. To permanently delete your account, please enter your password.</p>
+          <div class="form-group">
+            <label class="form-label">Password:</label>
+            <div class="password-wrapper">
+              <input
+                type="password"
+                id="deleteConfirmPassword"
+                class="form-input"
+                placeholder="Enter your password to confirm..."
+              />
+              <button class="toggle-password">👁️</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-danger" id="confirmDeleteAccountBtn">
+            Permanently Delete Account
+          </button>
+          <button class="btn btn-secondary" id="cancelDeleteAccountBtn">
+            Cancel
           </button>
         </div>
       </div>
