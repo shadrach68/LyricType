@@ -1,6 +1,10 @@
 import { MongoClient } from "mongodb";
+import "dotenv/config";
 
 const uri = process.env.MONGO_URI || "mongodb://localhost:27017";
+if (!uri){
+  throw new error("please provide a MongoDB URI");
+}
 const client = new MongoClient(uri);
 
 let db;
