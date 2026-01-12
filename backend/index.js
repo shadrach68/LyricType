@@ -6,6 +6,7 @@ import {
   usersCollection,
   scoresCollection,
   trainingScoresCollection,
+  feedbackCollection,
 } from "./database.js";
 import bcrypt from "bcrypt";
 import session from "express-session";
@@ -408,6 +409,107 @@ async function startServer() {
       .sort({ date: -1 })
       .toArray();
     res.json(scores);
+  });
+
+  // --- Mobile / Social Routes ---
+
+  // Get leaderboard (best player per song)
+  app.get("/api/leaderboard", async (req, res) => {
+    try {
+      const leaderboard = await scoresCollection()
+        .aggregate([
+          { $sort: { wpm: -1, accuracy: -1 } },
+          {
+            $group: {
+              _id: "$songTitle",
+              bestScore: { $first: "$$ROOT" },
+            },
+          },
+          { $replaceRoot: { newRoot: "$bestScore" } },
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "userInfo",
+            },
+          },
+          {
+            $project: {
+              username: { $arrayElemAt: ["$userInfo.username", 0] },
+              songTitle: 1,
+              artist: 1,
+              wpm: 1,
+              accuracy: 1,
+              date: 1,
+              difficulty: 1
+            },
+          },
+          { $sort: { wpm: -1 } }
+        ])
+        .toArray();
+      res.json(leaderboard);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching leaderboard." });
+    }
+  });
+
+  // Get recent global activity (public)
+  app.get("/api/recent-activity", async (req, res) => {
+    try {
+      const recentScores = await scoresCollection()
+        .aggregate([
+          { $sort: { date: -1 } },
+          { $limit: 20 },
+          {
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "userInfo",
+            },
+          },
+          {
+            $project: {
+              username: { $arrayElemAt: ["$userInfo.username", 0] },
+              songTitle: 1,
+              wpm: 1,
+              accuracy: 1,
+              date: 1,
+            },
+          },
+        ])
+        .toArray();
+      res.json(recentScores);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching activity." });
+    }
+  });
+
+  // Get all feedback (Protected: requires login)
+  app.get("/api/feedback", isAuthenticated, async (req, res) => {
+    const feedback = await feedbackCollection()
+      .find({})
+      .sort({ date: -1 })
+      .toArray();
+    res.json(feedback);
+  });
+
+  // Post feedback (Protected: requires login)
+  app.post("/api/feedback", isAuthenticated, async (req, res) => {
+    const { message, rating } = req.body;
+    if (!message || !rating) return res.status(400).json({ message: "Message and rating are required" });
+
+    const newFeedback = {
+      userId: new ObjectId(req.session.user.id),
+      username: req.session.user.username,
+      message,
+      rating: parseInt(rating),
+      date: new Date(),
+    };
+
+    await feedbackCollection().insertOne(newFeedback);
+    res.status(201).json({ message: "Feedback posted successfully" });
   });
 
   // Save a new training score for the logged-in user

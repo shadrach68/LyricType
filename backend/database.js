@@ -3,7 +3,7 @@ import "dotenv/config";
 
 const uri = process.env.MONGO_URI || "mongodb://localhost:27017";
 if (!uri){
-  throw new error("please provide a MongoDB URI");
+  throw new Error("please provide a MongoDB URI");
 }
 const client = new MongoClient(uri);
 
@@ -20,3 +20,4 @@ export async function connectDb() {
 export const usersCollection = () => db.collection("users");
 export const scoresCollection = () => db.collection("scores");
 export const trainingScoresCollection = () => db.collection("trainingScores");
+export const feedbackCollection = () => db.collection("feedback");

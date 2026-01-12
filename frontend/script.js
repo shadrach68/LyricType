@@ -231,14 +231,21 @@ async function checkSession() {
       };
       completedSongTitles = currentUser.completedSongTitles || [];
       updateUserUI();
+    } else {
+      updateUserUI();
     }
   } catch (error) {
     console.error("Could not check session:", error);
     // App can still run without a logged-in user
+    updateUserUI();
   }
 }
 
 async function fetchSongs() {
+  const songGrid = document.getElementById("songGrid");
+  songGrid.innerHTML =
+    '<div class="loading-message"><i class="fa-solid fa-spinner fa-spin"></i> Loading songs...</div>';
+
   try {
     const response = await fetch("/api/songs");
     const songs = await response.json();
@@ -246,9 +253,17 @@ async function fetchSongs() {
     renderSongs();
   } catch (error) {
     console.error("Failed to fetch songs:", error);
-    const songGrid = document.getElementById("songGrid");
     songGrid.innerHTML =
       '<div class="empty-message">Could not load songs. Please try refreshing the page.</div>';
+    `<div class="empty-message">
+        <p>Could not load songs.</p>
+        <button id="retryFetchBtn" class="btn btn-primary" style="margin-top: 10px;">
+          <i class="fa-solid fa-rotate-right"></i> Retry
+        </button>
+      </div>`;
+    document
+      .getElementById("retryFetchBtn")
+      .addEventListener("click", fetchSongs);
   }
 }
 
@@ -266,6 +281,7 @@ function initializeApp() {
   setupEventListeners();
   setupScrollAnimations();
   initializeBackgroundAnimation();
+  checkMobileView();
 }
 
 function setupScrollAnimations() {
@@ -341,7 +357,7 @@ function renderSongs() {
                     <div class="song-title">${song.title}</div>
                     ${
                       song.isCustom
-                        ? '<div class="song-custom">📝 Custom</div>'
+                        ? '<div class="song-custom"><i class="fa-solid fa-pen"></i> Custom</div>'
                         : ""
                     }
                     <div class="song-artist">by ${song.artist}</div>
@@ -551,6 +567,59 @@ function setupEventListeners() {
     .getElementById("closeTutorialBtn")
     .addEventListener("click", hideTutorialModal);
 
+  // Mobile Tabs
+  document.querySelectorAll(".mobile-tab").forEach((tab) => {
+    tab.addEventListener("click", handleMobileTabSwitch);
+  });
+  setupMobileSwipe();
+
+  // Mobile Settings Dropdown
+  document
+    .getElementById("mobileSettingsToggle")
+    .addEventListener("click", () => {
+      document
+        .getElementById("mobileSettingsDropdown")
+        .classList.toggle("show");
+    });
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    const dropdown = document.getElementById("mobileSettingsDropdown");
+    const toggle = document.getElementById("mobileSettingsToggle");
+    if (
+      dropdown &&
+      toggle &&
+      !dropdown.contains(e.target) &&
+      !toggle.contains(e.target)
+    ) {
+      dropdown.classList.remove("show");
+    }
+  });
+
+  document
+    .getElementById("mobileThemeLight")
+    .addEventListener("click", () => changeTheme("light"));
+  document
+    .getElementById("mobileThemeDark")
+    .addEventListener("click", () => changeTheme("dark"));
+
+  document
+    .getElementById("mobileAccountSettingsBtn")
+    .addEventListener("click", () => {
+      document
+        .getElementById("mobileSettingsDropdown")
+        .classList.remove("show");
+      if (!currentUser) {
+        showModal("loginModal");
+      } else {
+        showModal("settingsModal");
+      }
+    });
+
+  document
+    .getElementById("mobileLogoutBtn")
+    .addEventListener("click", handleAccountClick);
+
   // Account Modals
   document
     .getElementById("accountBtn")
@@ -714,13 +783,14 @@ function setupEventListeners() {
   // Add listeners for password visibility toggles
   document.querySelectorAll(".toggle-password").forEach((btn) => {
     btn.addEventListener("click", (e) => {
+      const icon = e.currentTarget.querySelector("i");
       const passwordInput = e.currentTarget.previousElementSibling;
       if (passwordInput.type === "password") {
         passwordInput.type = "text";
-        e.currentTarget.textContent = "🙈";
+        icon.className = "fa-solid fa-eye-slash";
       } else {
         passwordInput.type = "password";
-        e.currentTarget.textContent = "👁️";
+        icon.className = "fa-solid fa-eye";
       }
       // Keep focus on the input
       passwordInput.focus();
@@ -776,6 +846,15 @@ function updateThemeUI() {
   const isLightMode = document.body.classList.contains("light-mode");
   const lightBtn = document.getElementById("theme-light-btn");
   const darkBtn = document.getElementById("theme-dark-btn");
+
+  // Mobile buttons
+  const mobileLightBtn = document.getElementById("mobileThemeLight");
+  const mobileDarkBtn = document.getElementById("mobileThemeDark");
+
+  if (mobileLightBtn && mobileDarkBtn) {
+    mobileLightBtn.classList.toggle("active", isLightMode);
+    mobileDarkBtn.classList.toggle("active", !isLightMode);
+  }
 
   if (isLightMode) {
     lightBtn.classList.add("active");
@@ -1013,14 +1092,14 @@ function togglePause() {
   const typingInput = document.getElementById("typingInput");
 
   if (isPaused) {
-    pauseBtn.textContent = "▶️ Resume";
+    pauseBtn.innerHTML = '<i class="fa-solid fa-play"></i> Resume';
     pauseStartTime = Date.now();
     if (inactivityTimer) {
       clearTimeout(inactivityTimer);
       inactivityTimer = null;
     }
   } else {
-    pauseBtn.textContent = "⏸️ Pause";
+    pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
     if (pauseStartTime && startTime) {
       const pauseDuration = Date.now() - pauseStartTime;
       startTime += pauseDuration; // Adjust start time to account for pause
@@ -1131,7 +1210,7 @@ function timeUp() {
 
   document.getElementById("finalStats").innerHTML = `
         <div class="final-block">
-          <div class="final-title final-title--danger">⏰ Time's Up!</div>
+          <div class="final-title final-title--danger"><i class="fa-solid fa-clock"></i> Time's Up!</div>
           <div class="final-subtitle">"${currentSong.title}" by ${
     currentSong.artist
   }</div>
@@ -1231,7 +1310,11 @@ function completeSong() {
           <div class="final-title ${
             allGoalsMet ? "final-title--success" : "final-title--danger"
           }">
-            ${allGoalsMet ? "🎉 Challenge Complete!" : "❌ Challenge Failed!"}
+            ${
+              allGoalsMet
+                ? '<i class="fa-solid fa-trophy"></i> Challenge Complete!'
+                : '<i class="fa-solid fa-xmark"></i> Challenge Failed!'
+            }
           </div>
           <div class="final-subtitle">"${currentSong.title}" by ${
     currentSong.artist
@@ -1419,7 +1502,7 @@ function populateAndShowStartModal(song) {
   if (wpmGoal || accuracyGoal) {
     challengeHtml = `
       <div class="challenge-list">
-        <h3>🏆 Song Challenges</h3>
+        <h3><i class="fa-solid fa-trophy"></i> Song Challenges</h3>
         <ul>
     `;
     if (wpmGoal) {
@@ -1631,6 +1714,7 @@ async function handleLogin() {
       applyTheme(currentUser.themePreference || "dark"); // Apply user's theme on login
       hideModal("loginModal");
       showNotification(`Welcome back, ${currentUser.username}!`, "success");
+      if (window.innerWidth <= 992) loadMobileReviews(); // Refresh mobile reviews if on mobile
     } else {
       showNotification(data.message, "error");
     }
@@ -1678,6 +1762,7 @@ async function handleLogout() {
     // If a difficulty was selected, clear it
     currentDifficultyFilter = null;
     applyFilters();
+    if (window.innerWidth <= 992) loadMobileReviews(); // Refresh mobile view
   } catch (error) {
     showNotification("Logout failed.", "error");
   }
@@ -1860,15 +1945,27 @@ function updateUserUI() {
   const profileBtnContainer = document.getElementById("profileBtnContainer");
 
   if (currentUser) {
-    icon.textContent = "👋";
+    icon.className = "sidebar-icon fa-solid fa-right-from-bracket";
     text.textContent = `Logout (${currentUser.username})`;
     profileBtnContainer.style.display = "block";
     updateDifficultyLocks();
   } else {
-    icon.textContent = "👤";
+    icon.className = "sidebar-icon fa-solid fa-user";
     text.textContent = "Login";
     profileBtnContainer.style.display = "none";
     updateDifficultyLocks();
+  }
+
+  // Update Mobile UI
+  const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
+  if (mobileLogoutBtn) {
+    if (currentUser) {
+      mobileLogoutBtn.textContent = "Logout";
+      mobileLogoutBtn.classList.add("text-danger");
+    } else {
+      mobileLogoutBtn.textContent = "Login";
+      mobileLogoutBtn.classList.remove("text-danger");
+    }
   }
 }
 
@@ -1913,16 +2010,17 @@ function renderLessons() {
 
     card.innerHTML = `
       <h3>${lesson.title}</h3>
-      <div class="lesson-time">🕒 ${timeString}</div>
+      <div class="lesson-time"><i class="fa-regular fa-clock"></i> ${timeString}</div>
     `;
 
     if (index > trainingProgress) {
       card.classList.add("locked");
-      card.innerHTML += "<span>🔒 Locked</span>";
+      card.innerHTML += '<span><i class="fa-solid fa-lock"></i> Locked</span>';
     } else {
       if (index < trainingProgress) {
         card.classList.add("completed");
-        card.innerHTML += "<span>✔️ Completed</span>";
+        card.innerHTML +=
+          '<span><i class="fa-solid fa-check"></i> Completed</span>';
       }
       card.addEventListener("click", () => startLesson(index));
     }
@@ -1954,7 +2052,8 @@ function startDrill() {
 
   document.getElementById("trainingMenu").classList.remove("active");
   document.getElementById("trainingArea").classList.add("active");
-  document.getElementById("pauseTrainingBtn").textContent = "⏸️ Pause";
+  document.getElementById("pauseTrainingBtn").innerHTML =
+    '<i class="fa-solid fa-pause"></i> Pause';
 
   loadDrill();
   resetTrainingStatsDisplay();
@@ -2091,8 +2190,8 @@ function trainingTimeUp() {
     </div>
   `;
 
-  document.querySelector("#trainingCompletionModal h2").textContent =
-    "⏰ Time's Up!";
+  document.querySelector("#trainingCompletionModal h2").innerHTML =
+    '<i class="fa-solid fa-clock"></i> Time\'s Up!';
   showModal("trainingCompletionModal");
 
   // Save the score for the timed-out attempt
@@ -2139,11 +2238,11 @@ function toggleTrainingPause() {
   const pauseBtn = document.getElementById("pauseTrainingBtn");
 
   if (isTrainingPaused) {
-    pauseBtn.textContent = "▶️ Resume";
+    pauseBtn.innerHTML = '<i class="fa-solid fa-play"></i> Resume';
     trainingPauseStartTime = Date.now();
     if (trainingInactivityTimer) clearTimeout(trainingInactivityTimer);
   } else {
-    pauseBtn.textContent = "⏸️ Pause";
+    pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
     if (trainingPauseStartTime && trainingStartTime) {
       const pauseDuration = Date.now() - trainingPauseStartTime;
       trainingStartTime += pauseDuration; // Adjust start time to account for pause
@@ -2178,8 +2277,8 @@ function completeTrainingLesson() {
   const finalErrors = document.getElementById("trainingErrorsStat").textContent;
 
   // Ensure modal title is correct for completion
-  document.querySelector("#trainingCompletionModal h2").textContent =
-    "🎉 Lesson Complete!";
+  document.querySelector("#trainingCompletionModal h2").innerHTML =
+    '<i class="fa-solid fa-trophy"></i> Lesson Complete!';
 
   const finalStatsEl = document.getElementById("trainingFinalStats");
   finalStatsEl.innerHTML = `
@@ -2446,6 +2545,242 @@ function initializeBackgroundAnimation() {
 
   // Use setInterval to control the frame rate, making it less CPU intensive
   animationIntervalId = setInterval(draw, 100);
+}
+
+// --- Mobile View Logic ---
+function checkMobileView() {
+  if (window.innerWidth <= 992) {
+    loadMobileLeaderboard();
+    loadMobileReviews();
+  }
+}
+
+function handleMobileTabSwitch(e) {
+  const targetTab = e.currentTarget.dataset.tab;
+
+  // Update tab UI
+  document
+    .querySelectorAll(".mobile-tab")
+    .forEach((t) => t.classList.remove("active"));
+  e.currentTarget.classList.add("active");
+
+  // Update content visibility
+  document
+    .querySelectorAll(".mobile-view")
+    .forEach((v) => v.classList.remove("active"));
+  document.getElementById(`mobile-${targetTab}-view`).classList.add("active");
+
+  if (targetTab === "leaderboard") loadMobileLeaderboard();
+  if (targetTab === "reviews") loadMobileReviews();
+}
+
+async function loadMobileLeaderboard() {
+  const list = document.getElementById("mobileLeaderboardList");
+  try {
+    const res = await fetch("/api/leaderboard");
+    const data = await res.json();
+
+    if (data.length === 0) {
+      list.innerHTML =
+        '<div class="empty-message">No records yet. Be the first!</div>';
+      return;
+    }
+
+    list.innerHTML = data
+      .map(
+        (item) => `
+      <div class="activity-item">
+        <div class="activity-header">
+          <span class="activity-user">${item.username || "Anonymous"}</span>
+          <span class="activity-date"><i class="fa-solid fa-trophy" style="color: gold;"></i> Top Score</span>
+        </div>
+        <div class="activity-song"><i class="fa-solid fa-music"></i> ${
+          item.songTitle
+        }</div>
+        <div class="activity-stats">
+          <strong>${item.wpm} WPM</strong> • ${
+          item.accuracy
+        }% Accuracy • ${item.difficulty.toUpperCase()}
+        </div>
+      </div>
+    `
+      )
+      .join("");
+  } catch (e) {
+    list.innerHTML =
+      '<div class="empty-message">Failed to load leaderboard.</div>';
+  }
+}
+
+async function loadMobileReviews() {
+  const container = document.getElementById("mobileReviewsContent");
+
+  if (!currentUser) {
+    container.innerHTML = `
+      <div class="mobile-login-prompt">
+        <h3>🔒 Login Required</h3>
+        <p>You must be logged in to view and submit feedback.</p>
+        <button class="btn btn-primary" onclick="showModal('loginModal')">Login / Register</button>
+      </div>
+    `;
+    return;
+  }
+
+  // Show form and list container
+  container.innerHTML = `
+    <div class="feedback-form">
+      <div class="star-rating" id="reviewStarRating">
+        <i class="fa-regular fa-star" data-value="1"></i>
+        <i class="fa-regular fa-star" data-value="2"></i>
+        <i class="fa-regular fa-star" data-value="3"></i>
+        <i class="fa-regular fa-star" data-value="4"></i>
+        <i class="fa-regular fa-star" data-value="5"></i>
+      </div>
+      <textarea id="mobileFeedbackInput" class="feedback-textarea" placeholder="Write a review..."></textarea>
+      <button class="btn btn-primary" id="submitFeedbackBtn" style="width:100%">Post Review</button>
+    </div>
+    <div id="feedbackList">
+      <div class="loading-spinner">Loading reviews...</div>
+    </div>
+  `;
+
+  // Star rating logic
+  let selectedRating = 0;
+  const stars = document.querySelectorAll("#reviewStarRating i");
+  stars.forEach((star) => {
+    star.addEventListener("click", (e) => {
+      selectedRating = parseInt(e.target.dataset.value);
+      stars.forEach((s) => {
+        s.classList.toggle(
+          "fa-solid",
+          parseInt(s.dataset.value) <= selectedRating
+        );
+        s.classList.toggle(
+          "fa-regular",
+          parseInt(s.dataset.value) > selectedRating
+        );
+      });
+    });
+  });
+
+  document
+    .getElementById("submitFeedbackBtn")
+    .addEventListener("click", () => submitMobileReview(selectedRating));
+
+  try {
+    const res = await fetch("/api/feedback");
+    const data = await res.json();
+    const list = document.getElementById("feedbackList");
+
+    if (data.length === 0) {
+      list.innerHTML = '<div class="empty-message">No reviews yet.</div>';
+      return;
+    }
+
+    const renderStars = (rating) => {
+      let html = "";
+      for (let i = 1; i <= 5; i++) {
+        html += `<i class="${
+          i <= rating ? "fa-solid" : "fa-regular"
+        } fa-star" style="color: gold; font-size: 0.8rem;"></i>`;
+      }
+      return html;
+    };
+
+    list.innerHTML = data
+      .map(
+        (item) => `
+      <div class="feedback-item">
+        <div class="feedback-header">
+          <span class="feedback-author">${item.username}</span>
+          <span class="feedback-date">${renderStars(item.rating || 0)}</span>
+        </div>
+        <div class="feedback-message">${item.message}</div>
+        <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">${new Date(
+          item.date
+        ).toLocaleDateString()}</div>
+      </div>
+    `
+      )
+      .join("");
+  } catch (e) {
+    document.getElementById("feedbackList").innerHTML =
+      '<div class="empty-message">Failed to load reviews.</div>';
+  }
+}
+
+async function submitMobileReview(rating) {
+  const message = document.getElementById("mobileFeedbackInput").value.trim();
+
+  if (!rating) {
+    showNotification("Please select a star rating", "error");
+    return;
+  }
+  if (!message) {
+    showNotification("Please write a review message", "error");
+    return;
+  }
+
+  try {
+    await fetch("/api/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, rating }),
+    });
+    loadMobileReviews(); // Reload list
+  } catch (e) {
+    showNotification("Failed to post review", "error");
+  }
+}
+
+function setupMobileSwipe() {
+  const contentArea = document.querySelector(".mobile-content-area");
+  if (!contentArea) return;
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchEndX = 0;
+  let touchEndY = 0;
+  const minSwipeDistance = 50;
+
+  contentArea.addEventListener(
+    "touchstart",
+    (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    },
+    { passive: true }
+  );
+
+  contentArea.addEventListener(
+    "touchend",
+    (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipeGesture();
+    },
+    { passive: true }
+  );
+
+  function handleSwipeGesture() {
+    const distanceX = touchEndX - touchStartX;
+    const distanceY = touchEndY - touchStartY;
+
+    if (
+      Math.abs(distanceX) > Math.abs(distanceY) &&
+      Math.abs(distanceX) > minSwipeDistance
+    ) {
+      const activeTab = document.querySelector(".mobile-tab.active");
+      if (!activeTab) return;
+      const currentTab = activeTab.dataset.tab;
+
+      if (distanceX < 0 && currentTab === "leaderboard") {
+        document.querySelector('.mobile-tab[data-tab="reviews"]').click();
+      } else if (distanceX > 0 && currentTab === "reviews") {
+        document.querySelector('.mobile-tab[data-tab="leaderboard"]').click();
+      }
+    }
+  }
 }
 
 // Initialize the app

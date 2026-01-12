@@ -3,43 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LyricType - Type Your Favorite Songs</title>
+    <title>LyricType</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   </head>
   <body>
     <canvas id="background-animation"></canvas>
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <h1 class="sidebar-title">🎵 LyricType</h1>
+        <h1 class="sidebar-title"><i class="fa-solid fa-music"></i> LyricType</h1>
       </div>
       <ul class="sidebar-nav">
         <li>
           <button class="sidebar-btn" id="tutorialBtn">
-            <span class="sidebar-icon">🎓</span>
+            <i class="sidebar-icon fa-solid fa-graduation-cap"></i>
             <span class="sidebar-text">Tutorial</span>
           </button>
         </li>
         <li>
           <button class="sidebar-btn" id="trainingBtn">
-            <span class="sidebar-icon">⌨️</span>
+            <i class="sidebar-icon fa-solid fa-keyboard"></i>
             <span class="sidebar-text">Training</span>
           </button>
         </li>
         <li>
           <button class="sidebar-btn" id="settingsBtn">
-            <span class="sidebar-icon">⚙️</span>
+            <i class="sidebar-icon fa-solid fa-cog"></i>
             <span class="sidebar-text">Settings</span>
           </button>
         </li>
         <li id="profileBtnContainer">
           <button class="sidebar-btn" id="profileBtn">
-            <span class="sidebar-icon">📊</span>
+            <i class="sidebar-icon fa-solid fa-chart-bar"></i>
             <span class="sidebar-text">My Profile</span>
           </button>
         </li>
         <li>
           <button class="sidebar-btn" id="accountBtn">
-            <span class="sidebar-icon">👤</span>
+            <i class="sidebar-icon fa-solid fa-user"></i>
             <span class="sidebar-text">Login</span>
           </button>
         </li>
@@ -47,7 +48,7 @@
     </div>
 
     <div class="main-content" id="mainContent">
-      <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+      <button class="sidebar-toggle" id="sidebarToggle" title="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
       <div class="container">
         <div class="header fade-in">
           <h1>Practice Typing</h1>
@@ -64,27 +65,27 @@
               class="search-input"
               placeholder="Search for a song or artist..."
             />
-            <button class="btn btn-primary" id="searchBtn">🔍 Search</button>
+            <button class="btn btn-primary" id="searchBtn"><i class="fa-solid fa-search"></i> Search</button>
           </div>
 
           <div class="center-row">
             <div class="difficulty-container">
-              <span class="difficulty-label">🎯 Difficulty:</span>
+              <span class="difficulty-label"><i class="fa-solid fa-bullseye"></i> Difficulty:</span>
               <button class="difficulty-filter easy" data-difficulty="easy">
                 Easy (5 min)
               </button>
               <button class="difficulty-filter medium" data-difficulty="medium">
-                Medium (3 min) <span class="lock-icon">🔒</span>
+                Medium (3 min) <i class="fa-solid fa-lock lock-icon"></i>
               </button>
               <button class="difficulty-filter hard" data-difficulty="hard">
-                Hard (2 min) <span class="lock-icon">🔒</span>
+                Hard (2 min) <i class="fa-solid fa-lock lock-icon"></i>
               </button>
             </div>
           </div>
 
           <div class="centered">
             <button class="btn btn-secondary" id="addCustomBtn">
-              ➕ Add Custom Song
+              <i class="fa-solid fa-plus"></i> Add Custom Song
             </button>
           </div>
         </div>
@@ -136,10 +137,10 @@
         />
 
         <div class="controls fade-in">
-          <button class="btn btn-secondary" id="restartBtn">🔄 Restart</button>
-          <button class="btn btn-secondary" id="pauseBtn">⏸️ Pause</button>
+          <button class="btn btn-secondary" id="restartBtn"><i class="fa-solid fa-rotate-right"></i> Restart</button>
+          <button class="btn btn-secondary" id="pauseBtn"><i class="fa-solid fa-pause"></i> Pause</button>
           <button class="btn btn-secondary" id="backBtn">
-            ⬅️ Back to Songs
+            <i class="fa-solid fa-arrow-left"></i> Back to Songs
           </button>
         </div>
       </div>
@@ -148,7 +149,7 @@
       <div class="training-menu" id="trainingMenu">
           <h2>Typing Lessons</h2>
           <div class="lesson-grid" id="lessonGrid"></div>
-          <button class="btn btn-secondary" id="backToSongsFromMenu">⬅️ Back to Songs</button>
+          <button class="btn btn-secondary" id="backToSongsFromMenu"><i class="fa-solid fa-arrow-left"></i> Back to Songs</button>
       </div>
 
       <!-- Training Area -->
@@ -232,9 +233,9 @@
           </div>
         </div>
         <div class="controls fade-in">
-          <button class="btn btn-secondary" id="restartTrainingBtn">🔄 Restart Lesson</button>
-          <button class="btn btn-secondary" id="pauseTrainingBtn">⏸️ Pause</button>
-          <button class="btn btn-secondary" id="backToTrainingMenu">⬅️ Back to Lessons</button>
+          <button class="btn btn-secondary" id="restartTrainingBtn"><i class="fa-solid fa-rotate-right"></i> Restart Lesson</button>
+          <button class="btn btn-secondary" id="pauseTrainingBtn"><i class="fa-solid fa-pause"></i> Pause</button>
+          <button class="btn btn-secondary" id="backToTrainingMenu"><i class="fa-solid fa-arrow-left"></i> Back to Lessons</button>
         </div>
       </div>
     </div>
@@ -243,13 +244,13 @@
     <div class="completion-modal" id="trainingCompletionModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="trainingCompletionModal">×</button>
-        <h2>🎉 Lesson Complete!</h2>
+        <h2><i class="fa-solid fa-trophy"></i> Lesson Complete!</h2>
         <div id="trainingFinalStats">
           <!-- Final training stats will be populated here -->
         </div>
         <div class="modal-actions modal-actions-center">
-          <button class="btn btn-primary" id="restartTrainingFromModalBtn">🔄 Restart Lesson</button>
-          <button class="btn btn-secondary" id="backToMenuFromModalBtn">⬅️ Back to Lessons</button>
+          <button class="btn btn-primary" id="restartTrainingFromModalBtn"><i class="fa-solid fa-rotate-right"></i> Restart Lesson</button>
+          <button class="btn btn-secondary" id="backToMenuFromModalBtn"><i class="fa-solid fa-arrow-left"></i> Back to Lessons</button>
         </div>
       </div>
     </div>
@@ -257,7 +258,7 @@
     <div class="completion-modal" id="completionModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="completionModal">×</button>
-        <h2>🎉 Song Complete!</h2>
+        <h2><i class="fa-solid fa-trophy"></i> Song Complete!</h2>
         <div id="finalStats"></div>
         <div class="modal-actions">
           <button class="btn btn-primary" id="tryAgainBtn">Try Again</button>
@@ -285,7 +286,7 @@
     <div class="completion-modal" id="customSongModal">
       <div class="modal-content modal-large">
         <button class="modal-close-btn" data-modal-id="customSongModal">×</button>
-        <h2>🎵 Add Custom Song</h2>
+        <h2><i class="fa-solid fa-music"></i> Add Custom Song</h2>
         <div class="modal-body">
           <div class="form-group">
             <label class="form-label">Song Title:</label>
@@ -326,9 +327,9 @@
           </div>
         </div>
         <div class="modal-actions modal-actions-center">
-          <button class="btn btn-primary" id="saveSongBtn">💾 Save Song</button>
+          <button class="btn btn-primary" id="saveSongBtn"><i class="fa-solid fa-floppy-disk"></i> Save Song</button>
           <button class="btn btn-secondary" id="cancelSongBtn">
-            ❌ Cancel
+            <i class="fa-solid fa-xmark"></i> Cancel
           </button>
         </div>
       </div>
@@ -338,7 +339,7 @@
     <div class="completion-modal" id="loginModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="loginModal">×</button>
-        <h2>👤 Login</h2>
+        <h2><i class="fa-solid fa-user"></i> Login</h2>
         <div class="modal-body">
           <div class="form-group">
             <label class="form-label">Username:</label>
@@ -360,7 +361,7 @@
                 class="form-input"
                 placeholder="Enter your password..."
               />
-              <button class="toggle-password">👁️</button>
+              <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
             </div>
           </div>
           <div class="form-group text-right">
@@ -380,7 +381,7 @@
     <div class="completion-modal" id="registerModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="registerModal">×</button>
-        <h2>✨ Create Account</h2>
+        <h2><i class="fa-solid fa-user-plus"></i> Create Account</h2>
         <div class="modal-body">
           <div class="form-group">
             <label class="form-label">Username:</label>
@@ -398,7 +399,7 @@
             <label class="form-label">Password:</label>
             <div class="password-wrapper">
               <input type="password" id="registerPassword" class="form-input" title="registerPassword"/>
-              <button class="toggle-password">👁️</button>
+              <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
             </div>
           </div>
         </div>
@@ -417,7 +418,7 @@
     <div class="completion-modal" id="forgotPasswordModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="forgotPasswordModal">×</button>
-        <h2>🔑 Reset Password</h2>
+        <h2><i class="fa-solid fa-key"></i> Reset Password</h2>
         <div class="modal-body">
           <p>Enter your account's email address and we will send you a password reset link.</p>
           <div class="form-group">
@@ -440,7 +441,7 @@
     <div class="completion-modal" id="resetPasswordWithTokenModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="resetPasswordWithTokenModal">×</button>
-        <h2>🔒 Reset Your Password</h2>
+        <h2><i class="fa-solid fa-lock"></i> Reset Your Password</h2>
         <div class="modal-body">
           <p>Please enter the 6-digit code sent to your email address.</p>
           <div class="form-group">
@@ -454,14 +455,14 @@
             <label class="form-label">New Password:</label>
             <div class="password-wrapper">
               <input type="password" id="resetTokenPassword" class="form-input" title="passwordResetToken" />
-              <button class="toggle-password">👁️</button>
+              <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Confirm New Password:</label>
             <div class="password-wrapper">
               <input type="password" id="resetTokenConfirmPassword" class="form-input" title="passwordResetConfirm" />
-              <button class="toggle-password">👁️</button>
+              <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
             </div>
           </div>
         </div>
@@ -475,7 +476,7 @@
     <div class="completion-modal" id="logoutConfirmModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="logoutConfirmModal">×</button>
-        <h2>👋 Confirm Logout</h2>
+        <h2><i class="fa-solid fa-right-from-bracket"></i> Confirm Logout</h2>
         <div class="modal-body">
           <p>Are you sure you want to log out?</p>
         </div>
@@ -492,7 +493,7 @@
     <div class="completion-modal" id="profileModal">
       <div class="modal-content modal-large">
         <button class="modal-close-btn" data-modal-id="profileModal">×</button>
-        <h2>📊 My Profile</h2>
+        <h2><i class="fa-solid fa-chart-bar"></i> My Profile</h2>
         <div class="modal-body" id="profileBody">
           <!-- Profile stats will be loaded here -->
           <div class="profile-loading">Loading profile data...</div>
@@ -509,14 +510,14 @@
     <div class="completion-modal" id="settingsModal">
       <div class="modal-content modal-large">
         <button class="modal-close-btn" data-modal-id="settingsModal">×</button>
-        <h2>⚙️ Settings</h2>
+        <h2><i class="fa-solid fa-cog"></i> Settings</h2>
         <div class="modal-body">
           <!-- Theme Settings -->
           <div class="settings-section">
             <h3>Theme</h3>
             <div class="theme-selector">
-              <button class="btn" id="theme-light-btn">☀️ Light</button>
-              <button class="btn" id="theme-dark-btn">🌙 Dark</button>
+              <button class="btn" id="theme-light-btn"><i class="fa-solid fa-sun"></i> Light</button>
+              <button class="btn" id="theme-dark-btn"><i class="fa-solid fa-moon"></i> Dark</button>
             </div>
           </div>
 
@@ -527,21 +528,21 @@
               <label class="form-label">Old Password:</label>
               <div class="password-wrapper">
                 <input type="password" title = "form-input" id="oldPassword" class="form-input" />
-                <button class="toggle-password">👁️</button>
+                <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
               </div>
             </div>
           <div class="form-group">
               <label class="form-label">New Password:</label>
               <div class="password-wrapper">
                 <input type="password" title = "form-input" id="newPassword" class="form-input" />
-                <button class="toggle-password">👁️</button>
+                <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
               </div>
             </div>
             <div class="form-group">
               <label class="form-label">Confirm New Password:</label>
               <div class="password-wrapper">
                 <input type="password" title = "form-input" id="confirmNewPassword" class="form-input" />
-                <button class="toggle-password">👁️</button>
+                <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
               </div>
             </div>
             <button class="btn btn-primary" id="resetPasswordBtn">Update Password</button>
@@ -564,7 +565,7 @@
     <div class="completion-modal" id="deleteAccountConfirmModal">
       <div class="modal-content">
         <button class="modal-close-btn" data-modal-id="deleteAccountConfirmModal">×</button>
-        <h2>⚠️ Confirm Deletion</h2>
+        <h2><i class="fa-solid fa-triangle-exclamation"></i> Confirm Deletion</h2>
         <div class="modal-body">
           <p>This is your final warning. To permanently delete your account, please enter your password.</p>
           <div class="form-group">
@@ -576,7 +577,7 @@
                 class="form-input"
                 placeholder="Enter your password to confirm..."
               />
-              <button class="toggle-password">👁️</button>
+              <button class="toggle-password" title="toggle-password"><i class="fa-solid fa-eye"></i></button>
             </div>
           </div>
         </div>
@@ -595,7 +596,7 @@
     <div class="completion-modal" id="tutorialModal">
       <div class="modal-content modal-large">
         <button class="modal-close-btn" data-modal-id="tutorialModal">×</button>
-        <h2>🎓 Typing Tutorial</h2>
+        <h2><i class="fa-solid fa-graduation-cap"></i> Typing Tutorial</h2>
         <div class="modal-body tutorial-content">
             <h3>Posture for Healthy Typing</h3>
             <img
@@ -648,18 +649,47 @@
       aria-live="polite"
       aria-hidden="true"
     >
-      <div class="mobile-notice-card">
-        <div class="mobile-notice-emoji">📱</div>
-        <h2 class="mobile-notice-title">
-          LyricType looks best on larger screens
-        </h2>
-        <p class="mobile-notice-desc">
-          For the best typing experience, please open LyricType on a tablet or
-          desktop. Larger screens give you more space to type and make the
-          animations and stats more comfortable to use.
-        </p>
-        <div class="mobile-notice-actions">
-          <p class="desktop-link-text">https://lyrictype-app.onrender.com</p>
+      <div class="mobile-dashboard">
+        <div class="mobile-header">
+          <div class="mobile-header-top">
+            <h2><i class="fa-solid fa-music"></i> LyricType Hub</h2>
+            <button id="mobileSettingsToggle" class="mobile-settings-btn"><i class="fa-solid fa-bars"></i></button>
+          </div>
+          <p>Connect with other typists!</p>
+
+          <!-- Mobile Settings Dropdown -->
+          <div id="mobileSettingsDropdown" class="mobile-settings-dropdown">
+            <div class="mobile-setting-row">
+              <span>Theme</span>
+              <div class="mobile-theme-options">
+                <button id="mobileThemeLight" class="mobile-theme-opt"><i class="fa-solid fa-sun"></i></button>
+                <button id="mobileThemeDark" class="mobile-theme-opt"><i class="fa-solid fa-moon"></i></button>
+              </div>
+            </div>
+            <button id="mobileAccountSettingsBtn" class="mobile-dropdown-item">Account Settings</button>
+            <button id="mobileLogoutBtn" class="mobile-dropdown-item">Login</button>
+          </div>
+        </div>
+
+        <div class="mobile-tabs">
+          <button class="mobile-tab active" data-tab="leaderboard">Leaderboard</button>
+          <button class="mobile-tab" data-tab="reviews">Ratings & Reviews</button>
+        </div>
+
+        <div class="mobile-content-area">
+          <!-- Leaderboard Tab Content -->
+          <div id="mobile-leaderboard-view" class="mobile-view active">
+            <div class="mobile-list" id="mobileLeaderboardList">
+              <div class="loading-spinner">Loading leaderboard...</div>
+            </div>
+          </div>
+
+          <!-- Reviews Tab Content -->
+          <div id="mobile-reviews-view" class="mobile-view">
+            <div id="mobileReviewsContent">
+              <!-- Content injected via JS based on login state -->
+            </div>
+          </div>
         </div>
       </div>
     </div>
