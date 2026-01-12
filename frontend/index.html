@@ -21,6 +21,12 @@
           </button>
         </li>
         <li>
+          <button class="sidebar-btn" id="howToPlayBtn">
+            <i class="sidebar-icon fa-solid fa-circle-question"></i>
+            <span class="sidebar-text">How to Play</span>
+          </button>
+        </li>
+        <li>
           <button class="sidebar-btn" id="trainingBtn">
             <i class="sidebar-icon fa-solid fa-keyboard"></i>
             <span class="sidebar-text">Training</span>
@@ -30,6 +36,18 @@
           <button class="sidebar-btn" id="settingsBtn">
             <i class="sidebar-icon fa-solid fa-cog"></i>
             <span class="sidebar-text">Settings</span>
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-btn" id="aboutBtn">
+            <i class="sidebar-icon fa-solid fa-circle-info"></i>
+            <span class="sidebar-text">About</span>
+          </button>
+        </li>
+        <li>
+          <button class="sidebar-btn" id="contactBtn">
+            <i class="sidebar-icon fa-solid fa-envelope"></i>
+            <span class="sidebar-text">Contact</span>
           </button>
         </li>
         <li id="profileBtnContainer">
@@ -642,6 +660,111 @@
       </div>
     </div>
 
+    <!-- How to Play Modal -->
+    <div class="completion-modal" id="howToPlayModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="howToPlayModal">×</button>
+        <h2><i class="fa-solid fa-book-open"></i> How to Play</h2>
+        <div class="modal-body">
+          <h3><i class="fa-solid fa-bullseye"></i> Objective</h3>
+          <p>Type the lyrics of your favorite songs exactly as they appear. Aim for speed and accuracy to top the leaderboards!</p>
+          
+          <hr class="modal-divider">
+
+          <h3><i class="fa-solid fa-layer-group"></i> Difficulty Levels</h3>
+          <ul class="modal-list">
+            <li><strong>Easy:</strong> 5-minute time limit. Available to everyone.</li>
+            <li><strong>Medium:</strong> 3-minute time limit. Unlocks after completing 5 Easy songs.</li>
+            <li><strong>Hard:</strong> 2-minute time limit. Unlocks after completing 5 Medium songs. <span class="text-danger">No backspace allowed on errors!</span></li>
+          </ul>
+
+          <hr class="modal-divider">
+
+          <h3><i class="fa-solid fa-keyboard"></i> Controls & Rules</h3>
+          <ul class="modal-list">
+            <li><strong>Typing:</strong> Type the highlighted word. Characters turn green if correct, red if incorrect.</li>
+            <li><strong>Navigation:</strong> Press <strong>Spacebar</strong> to submit a word and move to the next.</li>
+            <li><strong>Auto-Pause:</strong> The game automatically pauses after <strong>10 seconds</strong> of inactivity.</li>
+            <li><strong>Completion:</strong> Finish the song before the timer runs out to save your score.</li>
+          </ul>
+
+          <hr class="modal-divider">
+
+          <h3><i class="fa-solid fa-star"></i> Features</h3>
+          <ul class="modal-list">
+            <li><strong>Training:</strong> Practice touch typing with guided lessons.</li>
+            <li><strong>Custom Songs:</strong> Add your own lyrics to practice with any text.</li>
+            <li><strong>Leaderboards:</strong> Compete with other players for the highest WPM on each song.</li>
+          </ul>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="closeHowToPlayBtn">Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="completion-modal" id="aboutModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="aboutModal">×</button>
+        <h2><i class="fa-solid fa-circle-info"></i> About LyricType</h2>
+        <div class="modal-body">
+          <p><strong>LyricType</strong> is a unique typing practice platform designed to help you improve your typing speed and accuracy while enjoying your favorite song lyrics.</p>
+          <br>
+          <h3><i class="fa-solid fa-star"></i> Key Features</h3>
+          <ul class="about-features-list">
+            <li>Practice with real song lyrics</li>
+            <li>Multiple difficulty levels</li>
+            <li>Detailed statistics (WPM, Accuracy)</li>
+            <li>Custom song support</li>
+            <li>Touch typing training modules</li>
+          </ul>
+          <br>
+          <h3><i class="fa-solid fa-user-tie"></i> Meet the CEO</h3>
+          <img src="images/ceo.jpg" alt="Ugwoke Shadrach Chinweike" class="ceo-image">
+          <p class="ceo-bio"><strong>Ugwoke Shadrach Chinweike</strong> is the CEO of LyricType.</p>
+          <p class="ceo-bio">He hails from Enugu State and developed this platform while studying at the University of Nigeria, Nsukka.</p>
+          <p class="ceo-bio">He is grateful to his family for their support throughout the development process.</p>
+          <br>
+          <p>Created with <i class="fa-solid fa-heart heart-icon"></i> for typists and music lovers everywhere.</p>
+          <p class="version-text">Version 1.0.0</p>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-primary" id="closeAboutBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div class="completion-modal" id="contactModal">
+      <div class="modal-content modal-large">
+        <button class="modal-close-btn" data-modal-id="contactModal">×</button>
+        <h2><i class="fa-solid fa-envelope"></i> Contact Us</h2>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Name:</label>
+            <input type="text" id="contactName" class="form-input" placeholder="Your Name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message:</label>
+            <textarea id="contactMessage" class="form-textarea" placeholder="Your Message"></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" id="submitContactBtn">Send Message</button>
+        </div>
+        <div class="modal-actions modal-actions-center">
+          <button class="btn btn-secondary" id="closeContactBtn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="completion-modal" id="imagePreviewModal">
+      <div class="modal-content image-preview-content">
+        <button class="modal-close-btn" data-modal-id="imagePreviewModal">×</button>
+        <img id="previewImage" src="" alt="Enlarged Preview">
+      </div>
+    </div>
+
     <!-- Mobile notice (shown only on small viewports via CSS) -->
     <div
       class="mobile-notice"
@@ -666,6 +789,9 @@
                 <button id="mobileThemeDark" class="mobile-theme-opt"><i class="fa-solid fa-moon"></i></button>
               </div>
             </div>
+            <button id="mobileHowToPlayBtn" class="mobile-dropdown-item">How to Play</button>
+            <button id="mobileAboutBtn" class="mobile-dropdown-item">About</button>
+            <button id="mobileContactBtn" class="mobile-dropdown-item">Contact</button>
             <button id="mobileAccountSettingsBtn" class="mobile-dropdown-item">Account Settings</button>
             <button id="mobileLogoutBtn" class="mobile-dropdown-item">Login</button>
           </div>
@@ -690,6 +816,9 @@
               <!-- Content injected via JS based on login state -->
             </div>
           </div>
+        </div>
+        <div class="mobile-footer">
+          <p><i class="fa-solid fa-laptop"></i> Want to play? Please log in on a desktop or laptop!</p>
         </div>
       </div>
     </div>

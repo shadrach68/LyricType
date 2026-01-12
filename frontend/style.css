@@ -1933,3 +1933,98 @@ body.light-mode .lesson-card .lesson-time {
 #errorsStat {
   color: var(--incorrect-color);
 }
+
+.about-features-list {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+.heart-icon {
+  color: #e74c3c;
+}
+
+.version-text {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.mobile-footer {
+  padding: 15px;
+  background: var(--surface-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-color-muted);
+  flex-shrink: 0;
+}
+
+.mobile-footer p {
+  margin: 0;
+}
+
+.ceo-bio {
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+.ceo-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 15px auto;
+  display: block;
+  border: 3px solid var(--primary-color);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.ceo-image:hover {
+  transform: scale(1.05);
+}
+
+.image-preview-content {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  width: auto;
+  max-width: 90vw;
+}
+
+.image-preview-content img {
+  max-height: 80vh;
+  max-width: 100%;
+  border-radius: var(--border-radius-md);
+  border: 4px solid var(--primary-color);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#imagePreviewModal {
+  z-index: 10001;
+}
+
+.modal-list {
+  text-align: left;
+  padding-left: 20px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.modal-divider {
+  margin: 20px 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.text-danger {
+  color: var(--incorrect-color);
+}

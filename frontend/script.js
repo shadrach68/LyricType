@@ -253,9 +253,8 @@ async function fetchSongs() {
     renderSongs();
   } catch (error) {
     console.error("Failed to fetch songs:", error);
-    songGrid.innerHTML =
-      '<div class="empty-message">Could not load songs. Please try refreshing the page.</div>';
-    `<div class="empty-message">
+    songGrid.innerHTML = `
+      <div class="empty-message">
         <p>Could not load songs.</p>
         <button id="retryFetchBtn" class="btn btn-primary" style="margin-top: 10px;">
           <i class="fa-solid fa-rotate-right"></i> Retry
@@ -558,6 +557,32 @@ function setupEventListeners() {
     .getElementById("tutorialBtn")
     .addEventListener("click", showTutorialModal);
   document
+    .getElementById("howToPlayBtn")
+    .addEventListener("click", () => showModal("howToPlayModal"));
+  document
+    .getElementById("closeHowToPlayBtn")
+    .addEventListener("click", () => hideModal("howToPlayModal"));
+  document
+    .getElementById("aboutBtn")
+    .addEventListener("click", () => showModal("aboutModal"));
+  document
+    .getElementById("closeAboutBtn")
+    .addEventListener("click", () => hideModal("aboutModal"));
+  document.getElementById("contactBtn").addEventListener("click", () => {
+    if (!currentUser) {
+      showNotification("Please log in to send a message.", "info");
+      showModal("loginModal");
+      return;
+    }
+    showModal("contactModal");
+  });
+  document
+    .getElementById("closeContactBtn")
+    .addEventListener("click", () => hideModal("contactModal"));
+  document
+    .getElementById("submitContactBtn")
+    .addEventListener("click", handleContactSubmission);
+  document
     .getElementById("profileBtn")
     .addEventListener("click", showProfileModal);
   document
@@ -602,6 +627,31 @@ function setupEventListeners() {
   document
     .getElementById("mobileThemeDark")
     .addEventListener("click", () => changeTheme("dark"));
+
+  document
+    .getElementById("mobileHowToPlayBtn")
+    .addEventListener("click", () => {
+      document
+        .getElementById("mobileSettingsDropdown")
+        .classList.remove("show");
+      showModal("howToPlayModal");
+    });
+
+  document.getElementById("mobileAboutBtn").addEventListener("click", () => {
+    document.getElementById("mobileSettingsDropdown").classList.remove("show");
+    showModal("aboutModal");
+  });
+
+  document.getElementById("mobileContactBtn").addEventListener("click", () => {
+    document.getElementById("mobileSettingsDropdown").classList.remove("show");
+
+    if (!currentUser) {
+      showNotification("Please log in to send a message.", "info");
+      showModal("loginModal");
+      return;
+    }
+    showModal("contactModal");
+  });
 
   document
     .getElementById("mobileAccountSettingsBtn")
@@ -699,6 +749,40 @@ function setupEventListeners() {
       hideModal("tutorialModal");
     }
   });
+  document.getElementById("howToPlayModal").addEventListener("click", (e) => {
+    if (e.target.id === "howToPlayModal") {
+      hideModal("howToPlayModal");
+    }
+  });
+  document.getElementById("aboutModal").addEventListener("click", (e) => {
+    if (e.target.id === "aboutModal") {
+      hideModal("aboutModal");
+    }
+  });
+  document.getElementById("contactModal").addEventListener("click", (e) => {
+    if (e.target.id === "contactModal") {
+      hideModal("contactModal");
+    }
+  });
+
+  // CEO Image Preview
+  const ceoImage = document.querySelector(".ceo-image");
+  if (ceoImage) {
+    ceoImage.addEventListener("click", () => {
+      const modal = document.getElementById("imagePreviewModal");
+      const img = document.getElementById("previewImage");
+      img.src = ceoImage.src;
+      modal.classList.add("show");
+    });
+  }
+  document
+    .getElementById("imagePreviewModal")
+    .addEventListener("click", (e) => {
+      if (e.target.id === "imagePreviewModal") {
+        hideModal("imagePreviewModal");
+      }
+    });
+
   document
     .getElementById("songStartConfirmModal")
     .addEventListener("click", (e) => {
@@ -825,6 +909,7 @@ function hideModal(modalId) {
     formElements.forEach((el) => {
       if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
         el.value = "";
+        el.disabled = false;
       } else if (el.tagName === "SELECT") {
         el.selectedIndex = 0; // Reset to the first option
       }
@@ -1484,6 +1569,43 @@ function saveCustomSong() {
     `"${title}" has been added to your song library!`,
     "success"
   );
+}
+
+async function handleContactSubmission() {
+  const name = document.getElementById("contactName").value.trim();
+  const message = document.getElementById("contactMessage").value.trim();
+
+  if (!name || !message) {
+    showNotification("Please fill in all fields.", "error");
+    return;
+  }
+
+  const btn = document.getElementById("submitContactBtn");
+  const originalText = btn.textContent;
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+
+  try {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, message }),
+    });
+
+    if (response.ok) {
+      showNotification("Message sent! Thank you for your feedback.", "success");
+      hideModal("contactModal");
+      document.getElementById("contactName").value = "";
+      document.getElementById("contactMessage").value = "";
+    } else {
+      showNotification("Failed to send message. Please try again.", "error");
+    }
+  } catch (error) {
+    showNotification("An error occurred. Please try again.", "error");
+  } finally {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
 }
 
 function populateAndShowStartModal(song) {
