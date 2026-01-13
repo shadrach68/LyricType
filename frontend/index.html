@@ -77,13 +77,18 @@
 
         <div class="search-section">
           <div class="search-row">
-            <input
-              type="text"
-              id="searchInput"
-              class="search-input"
-              placeholder="Search for a song or artist..."
-            />
-            <button class="btn btn-primary" id="searchBtn"><i class="fa-solid fa-search"></i> Search</button>
+            <div class="genre-select-wrapper" id="genreSelectorContainer">
+              <i class="fa-solid fa-music genre-icon"></i>
+              <select id="genreSelect" title="genreSelect" class="genre-select">
+                <option value="All Genres">All Genres</option>
+                <option value="Pop">Pop</option>
+                <option value="R&B">R&B</option>
+                <option value="Hip-Hop">Hip-Hop</option>
+                <option value="Gospel">Gospel</option>
+                <option value="Afrobeats">Afrobeats</option>
+              </select>
+              <i class="fa-solid fa-chevron-down genre-arrow"></i>
+            </div>
           </div>
 
           <div class="center-row">
@@ -695,6 +700,7 @@
             <li><strong>Training:</strong> Practice touch typing with guided lessons.</li>
             <li><strong>Custom Songs:</strong> Add your own lyrics to practice with any text.</li>
             <li><strong>Leaderboards:</strong> Compete with other players for the highest WPM on each song.</li>
+            <li><strong>Genre Filter:</strong> Log in to filter songs by genres like Pop, R&B, Hip-Hop, Gospel, and Afrobeats.</li>
           </ul>
         </div>
         <div class="modal-actions modal-actions-center">
@@ -823,6 +829,6 @@
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>

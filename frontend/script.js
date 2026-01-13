@@ -12,6 +12,7 @@ let timer = null;
 let allSongs = [];
 let filteredSongs = [];
 let currentDifficultyFilter = null;
+let currentGenreFilter = "All Genres";
 let timeLimit = 0;
 let timeRemaining = 0;
 let inactivityTimer = null;
@@ -337,9 +338,9 @@ function renderSongs() {
   const songGrid = document.getElementById("songGrid");
   songGrid.innerHTML = "";
 
-  if (currentDifficultyFilter === null) {
+  if (currentDifficultyFilter === null && currentGenreFilter === "All Genres") {
     songGrid.innerHTML =
-      '<div class="empty-message">🎯 Please select a difficulty level above to see available songs!</div>';
+      '<div class="empty-message">🎯 Please select a difficulty level or genre to see available songs!</div>';
     return;
   }
 
@@ -444,16 +445,6 @@ function renderLyrics() {
     })
     .join(" ");
 
-  // Search functionality
-  document
-    .getElementById("searchInput")
-    .addEventListener("input", handleSearch);
-  document.getElementById("searchBtn").addEventListener("click", handleSearch);
-  document.getElementById("searchInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  });
   updateWordClasses();
 }
 
@@ -516,16 +507,10 @@ function setupEventListeners() {
     delete document.body.dataset.songToStart;
   });
 
-  // Search functionality
+  // Genre filter functionality
   document
-    .getElementById("searchInput")
-    .addEventListener("input", handleSearch);
-  document.getElementById("searchBtn").addEventListener("click", handleSearch);
-  document.getElementById("searchInput").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  });
+    .getElementById("genreSelect")
+    .addEventListener("change", handleGenreFilter);
 
   // Difficulty filter functionality
   document.querySelectorAll(".difficulty-filter").forEach((button) => {
@@ -1432,7 +1417,8 @@ function completeSong() {
   }
 }
 
-function handleSearch() {
+function handleGenreFilter(e) {
+  currentGenreFilter = e.target.value;
   applyFilters();
 }
 
@@ -1490,30 +1476,17 @@ function updateDifficultyLocks() {
 }
 
 function applyFilters() {
-  if (currentDifficultyFilter === null) {
-    filteredSongs = [];
-    renderSongs();
-    return;
+  let filtered = allSongs;
+
+  if (currentDifficultyFilter !== null) {
+    filtered = filtered.filter(
+      (song) => song.difficulty === currentDifficultyFilter
+    );
   }
 
-  const searchTerm = document
-    .getElementById("searchInput")
-    .value.toLowerCase()
-    .trim();
-
-  // Start with songs of selected difficulty
-  let filtered = allSongs.filter(
-    (song) => song.difficulty === currentDifficultyFilter
-  );
-
-  // Apply search filter
-  if (searchTerm !== "") {
-    filtered = filtered.filter(
-      (song) =>
-        song.title.toLowerCase().includes(searchTerm) ||
-        song.artist.toLowerCase().includes(searchTerm) ||
-        song.lyrics.toLowerCase().includes(searchTerm)
-    );
+  // Apply genre filter
+  if (currentGenreFilter !== "All Genres") {
+    filtered = filtered.filter((song) => song.genre === currentGenreFilter);
   }
 
   filteredSongs = filtered;
@@ -1883,6 +1856,12 @@ async function handleLogout() {
     updateDifficultyLocks();
     // If a difficulty was selected, clear it
     currentDifficultyFilter = null;
+
+    // Reset genre filter
+    currentGenreFilter = "All Genres";
+    const genreSelect = document.getElementById("genreSelect");
+    if (genreSelect) genreSelect.value = "All Genres";
+
     applyFilters();
     if (window.innerWidth <= 992) loadMobileReviews(); // Refresh mobile view
   } catch (error) {
@@ -2065,16 +2044,19 @@ function updateUserUI() {
   const text = accountBtn.querySelector(".sidebar-text");
 
   const profileBtnContainer = document.getElementById("profileBtnContainer");
+  const genreSelectorContainer = document.getElementById("genreSelectorContainer");
 
   if (currentUser) {
     icon.className = "sidebar-icon fa-solid fa-right-from-bracket";
     text.textContent = `Logout (${currentUser.username})`;
     profileBtnContainer.style.display = "block";
+    if (genreSelectorContainer) genreSelectorContainer.style.display = "block";
     updateDifficultyLocks();
   } else {
     icon.className = "sidebar-icon fa-solid fa-user";
     text.textContent = "Login";
     profileBtnContainer.style.display = "none";
+    if (genreSelectorContainer) genreSelectorContainer.style.display = "none";
     updateDifficultyLocks();
   }
 

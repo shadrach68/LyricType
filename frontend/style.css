@@ -625,6 +625,12 @@ body.light-mode .difficulty-container {
   background: #d7dadd;
 }
 
+body.light-mode .genre-select {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  color: #333;
+}
+
 body.light-mode .btn-secondary {
   background: #e2e8f0;
   color: #4a5568;
@@ -676,6 +682,80 @@ body.light-mode .mobile-notice-card {
   background: rgba(0, 0, 0, 0.2);
   color: var(--text-color);
   outline: none;
+}
+
+.search-input option {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Beautiful Genre Selector Styles */
+.genre-select-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto; /* Center the dropdown */
+  display: none; /* Hidden by default, shown via JS if logged in */
+}
+
+.genre-select {
+  width: 100%;
+  padding: 15px 45px 15px 50px; /* Left padding for icon, right for arrow */
+  font-size: 1.1rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  color: var(--text-color);
+  background-color: var(--surface-color);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px; /* Pill shape */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.genre-select:hover {
+  border-color: var(--primary-color);
+  background-color: var(--surface-color-translucent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.genre-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px var(--primary-color-translucent);
+}
+
+.genre-icon {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.genre-arrow {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-color-muted);
+  pointer-events: none;
+  transition: transform 0.3s ease, color 0.3s ease;
+  font-size: 0.9rem;
+  z-index: 1;
+}
+
+/* Rotate arrow when select is focused */
+.genre-select:focus + .genre-arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--primary-color);
 }
 
 .center-row {
