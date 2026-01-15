@@ -16,26 +16,40 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
 // Register a new user
 router.post("/api/register", async (req, res) => {
-  const { username, password, email } = req.body;
-  if (!username || !password || !email) {
+  const { username, password, email, gender } = req.body;
+  if (!username || !password || !email || !gender) {
     return res
       .status(400)
-      .json({ message: "Username, email, and password are required." });
+      .json({ message: "Username, email, password, and gender are required." });
   }
-  // Basic email validation
   if (!/\S+@\S+\.\S+/.test(email)) {
     return res.status(400).json({ message: "Invalid email format." });
   }
 
   try {
-    const existingUser = await usersCollection().findOne({ username });
+    if (
+      process.env.ADMIN_USERNAME &&
+      username.toLowerCase() === process.env.ADMIN_USERNAME.toLowerCase()
+    ) {
+      return res.status(409).json({ message: "Username already exists." });
+    }
+
+    const existingUser = await usersCollection().findOne({
+      username: { $regex: `^${escapeRegex(username)}$`, $options: "i" },
+    });
     if (existingUser) {
       return res.status(409).json({ message: "Username already exists." });
     }
 
-    const existingEmail = await usersCollection().findOne({ email });
+    const existingEmail = await usersCollection().findOne({
+      email: { $regex: `^${escapeRegex(email)}$`, $options: "i" },
+    });
     if (existingEmail) {
       return res.status(409).json({ message: "Email is already in use." });
     }
@@ -45,6 +59,7 @@ router.post("/api/register", async (req, res) => {
       username,
       password: hashedPassword,
       email,
+      gender,
       trainingProgress: 0,
       themePreference: "dark", // Default theme for new users
       completedSongs: {
@@ -85,6 +100,7 @@ router.post("/api/login", async (req, res) => {
     id: user._id,
     username: user.username,
     email: user.email,
+    isAdmin: user.username === process.env.ADMIN_USERNAME,
     trainingProgress: user.trainingProgress || 0,
     themePreference: user.themePreference || "dark",
     completedSongs: user.completedSongs || { easy: 0, medium: 0, hard: 0 },

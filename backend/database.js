@@ -21,3 +21,4 @@ export const usersCollection = () => db.collection("users");
 export const scoresCollection = () => db.collection("scores");
 export const trainingScoresCollection = () => db.collection("trainingScores");
 export const feedbackCollection = () => db.collection("feedback");
+export const customSongsCollection = () => db.collection("customSongs");

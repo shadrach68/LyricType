@@ -45,6 +45,30 @@ router.post("/api/feedback", isAuthenticated, async (req, res) => {
   res.status(201).json({ message: "Feedback posted successfully" });
 });
 
+// Reply to feedback (Protected: requires login and admin)
+router.post("/api/feedback/:id/reply", isAuthenticated, async (req, res) => {
+  const { id } = req.params;
+  const { reply } = req.body;
+
+  if (!req.session.user.isAdmin) {
+    return res.status(403).json({ message: "Unauthorized: Admin access required." });
+  }
+
+  if (!reply) {
+    return res.status(400).json({ message: "Reply content is required." });
+  }
+
+  try {
+    await feedbackCollection().updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { reply, replyDate: new Date() } }
+    );
+    res.json({ message: "Reply posted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to post reply." });
+  }
+});
+
 // Contact Form Endpoint
 router.post("/api/contact", isAuthenticated, async (req, res) => {
   const { name, message } = req.body;

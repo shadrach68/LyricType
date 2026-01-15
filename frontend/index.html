@@ -341,6 +341,19 @@
           </div>
 
           <div class="form-group">
+            <label class="form-label" for="customGenre">Genre:</label>
+            <select id="customGenre" class="form-select">
+              <option value="" disabled selected>Select a genre...</option>
+              <option value="Pop">Pop</option>
+              <option value="R&B">R&B</option>
+              <option value="Hip-Hop">Hip-Hop</option>
+              <option value="Gospel">Gospel</option>
+              <option value="Afrobeats">Afrobeats</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label class="form-label">Lyrics:</label>
             <textarea
               id="customLyrics"
@@ -417,6 +430,14 @@
             <div class="password-wrapper">
               <input type="email" id="registerEmail" class="form-input" title="registerEmail"/>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender:</label>
+            <select id="registerGender" class="form-select" title="form-select">
+              <option value="" disabled selected>Select your gender...</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
           </div>
           <div class="form-group">
             <label class="form-label">Password:</label>
@@ -672,35 +693,45 @@
         <h2><i class="fa-solid fa-book-open"></i> How to Play</h2>
         <div class="modal-body">
           <h3><i class="fa-solid fa-bullseye"></i> Objective</h3>
-          <p>Type the lyrics of your favorite songs exactly as they appear. Aim for speed and accuracy to top the leaderboards!</p>
+          <p>Type the lyrics of your favorite songs exactly as they appear on the screen. Your goal is to type accurately and quickly to achieve a high Words Per Minute (WPM) score. Compete with others and see your name on the global leaderboards!</p>
           
           <hr class="modal-divider">
 
           <h3><i class="fa-solid fa-layer-group"></i> Difficulty Levels</h3>
           <ul class="modal-list">
-            <li><strong>Easy:</strong> 5-minute time limit. Available to everyone.</li>
-            <li><strong>Medium:</strong> 3-minute time limit. Unlocks after completing 5 Easy songs.</li>
-            <li><strong>Hard:</strong> 2-minute time limit. Unlocks after completing 5 Medium songs. <span class="text-danger">No backspace allowed on errors!</span></li>
+            <li><strong>Easy:</strong> Perfect for beginners. You have a generous <strong>5-minute</strong> time limit to complete the song. This mode is available to everyone immediately.</li>
+            <li><strong>Medium:</strong> For those ready for a challenge. You have <strong>3 minutes</strong> to finish. To unlock this mode, you must first complete <strong>5 songs on Easy difficulty</strong>.</li>
+            <li><strong>Hard:</strong> The ultimate test. You have only <strong>2 minutes</strong> to finish. Unlocks after completing <strong>5 songs on Medium difficulty</strong>. <span class="text-danger">Warning: Backspace is disabled if you make a mistake on a completed word!</span></li>
           </ul>
 
           <hr class="modal-divider">
 
           <h3><i class="fa-solid fa-keyboard"></i> Controls & Rules</h3>
           <ul class="modal-list">
-            <li><strong>Typing:</strong> Type the highlighted word. Characters turn green if correct, red if incorrect.</li>
-            <li><strong>Navigation:</strong> Press <strong>Spacebar</strong> to submit a word and move to the next.</li>
-            <li><strong>Auto-Pause:</strong> The game automatically pauses after <strong>10 seconds</strong> of inactivity.</li>
-            <li><strong>Completion:</strong> Finish the song before the timer runs out to save your score.</li>
+            <li><strong>Typing:</strong> Focus on the highlighted word. Correct characters turn green, while incorrect ones turn red.</li>
+            <li><strong>Navigation:</strong> Press the <strong>Spacebar</strong> to submit the current word and advance to the next one.</li>
+            <li><strong>Auto-Pause:</strong> If you stop typing for <strong>10 seconds</strong>, the game will automatically pause to save your progress. Press 'Resume' to continue.</li>
+            <li><strong>Completion:</strong> You must finish typing all lyrics before the timer runs out. Only completed songs are saved to your profile and the leaderboard.</li>
           </ul>
 
           <hr class="modal-divider">
 
           <h3><i class="fa-solid fa-star"></i> Features</h3>
           <ul class="modal-list">
-            <li><strong>Training:</strong> Practice touch typing with guided lessons.</li>
-            <li><strong>Custom Songs:</strong> Add your own lyrics to practice with any text.</li>
-            <li><strong>Leaderboards:</strong> Compete with other players for the highest WPM on each song.</li>
-            <li><strong>Genre Filter:</strong> Log in to filter songs by genres like Pop, R&B, Hip-Hop, Gospel, and Afrobeats.</li>
+            <li><strong>Training Mode:</strong> Access the "Training" section from the sidebar. It offers guided lessons starting from the home row to advanced sentences. Use the visual keyboard and finger guide to learn proper touch typing.</li>
+            <li><strong>Custom Songs:</strong> Want to practice with specific song? Click "Add Custom Song" in the song selector. Enter a title, artist, genre, and paste your lyrics. These songs are saved to your personal library.</li>
+            <li><strong>Leaderboards:</strong> Check the "Leaderboard" tab (on mobile) or view top scores after completing a song. See how you rank against other typists globally based on WPM and accuracy.</li>
+            <li><strong>Genre Filter:</strong> (Login Required) Use the dropdown menu above the song list to filter songs by genres like Pop, R&B, Hip-Hop, Gospel, and Afrobeats.</li>
+            <li><strong>My Profile:</strong> (Login Required) View your detailed statistics, including average WPM, accuracy, total songs typed, and a history of your recent activities.</li>
+            <li><strong>Settings:</strong> Customize your experience. Switch between Light and Dark themes, change your password, or manage your account.</li>
+          </ul>
+
+          <hr class="modal-divider">
+
+          <h3><i class="fa-solid fa-mobile-screen"></i> Device Compatibility</h3>
+          <ul class="modal-list">
+            <li><strong>Desktop & Laptop:</strong> Full gameplay experience.</li>
+            <li><strong>Mobile Phones:</strong> Access Leaderboards and Ratings & Reviews only.</li>
           </ul>
         </div>
         <div class="modal-actions modal-actions-center">

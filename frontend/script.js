@@ -28,6 +28,10 @@ let userCompletionProgress = {
 
 // --- Audio ---
 const errorSound = new Audio("sounds/error.mp3");
+const notificationSound = new Audio("sounds/notification.mp3");
+const successSound = new Audio("sounds/success.mp3");
+const gameCompleteSound = new Audio("sounds/game-complete.mp3");
+const gameOverSound = new Audio("sounds/game-over.mp3");
 
 // Training state
 let isTrainingActive = false;
@@ -206,6 +210,7 @@ let trainingInactivityTimer = null;
 let trainingPauseStartTime = null;
 let trainingCorrectChars = 0;
 let trainingTotalChars = 0;
+let editingSongId = null;
 
 // Time limits in seconds for each difficulty
 const timeLimits = {
@@ -377,6 +382,29 @@ function renderSongs() {
     }
 
     songCard.addEventListener("click", () => selectSong(song));
+
+    if (song.isCustom && song._id) {
+      const editBtn = document.createElement("button");
+      editBtn.className = "edit-song-btn";
+      editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      editBtn.title = "Edit Song";
+      editBtn.onclick = (e) => {
+        e.stopPropagation();
+        window.editCustomSong(song);
+      };
+      songCard.appendChild(editBtn);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "delete-song-btn";
+      deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+      deleteBtn.title = "Delete Song";
+      deleteBtn.onclick = (e) => {
+        e.stopPropagation();
+        window.deleteCustomSong(song._id, song.title);
+      };
+      songCard.appendChild(deleteBtn);
+    }
+
     songGrid.appendChild(songCard);
   });
 
@@ -885,6 +913,9 @@ function showModal(modalId) {
   document.getElementById(modalId).classList.add("show");
 }
 
+// Expose showModal to window so it can be used in inline onclick handlers
+window.showModal = showModal;
+
 function hideModal(modalId) {
   document.getElementById(modalId).classList.remove("show");
   // Reset all form elements within the modal to their default state
@@ -1252,6 +1283,10 @@ function resetStats() {
 }
 
 function timeUp() {
+  // Play game over sound
+  gameOverSound.currentTime = 0;
+  gameOverSound.play().catch(() => {});
+
   isTutorialRunning = false;
   if (timer) {
     clearInterval(timer);
@@ -1315,6 +1350,10 @@ function timeUp() {
 }
 
 function completeSong() {
+  // Play completion sound
+  gameCompleteSound.currentTime = 0;
+  gameCompleteSound.play().catch(() => {});
+
   isTutorialRunning = false;
   if (timer) {
     clearInterval(timer);
@@ -1505,16 +1544,23 @@ function hideCustomSongModal() {
   document.getElementById("customArtist").value = "";
   document.getElementById("customLyrics").value = "";
   document.getElementById("customDifficulty").value = "easy";
+  document.getElementById("customGenre").selectedIndex = 0;
+
+  // Reset edit state
+  editingSongId = null;
+  document.querySelector("#customSongModal h2").innerHTML = '<i class="fa-solid fa-music"></i> Add Custom Song';
+  document.getElementById("saveSongBtn").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Song';
 }
 
-function saveCustomSong() {
+async function saveCustomSong() {
   const title = document.getElementById("customTitle").value.trim();
   const artist = document.getElementById("customArtist").value.trim();
   const lyrics = document.getElementById("customLyrics").value.trim();
   const difficulty = document.getElementById("customDifficulty").value;
+  const genre = document.getElementById("customGenre").value;
 
-  if (!title || !artist || !lyrics) {
-    showNotification("Please fill in all fields!", "error");
+  if (!title || !artist || !lyrics || !genre) {
+    showNotification("Please fill in all fields including genre!", "error");
     return;
   }
 
@@ -1531,18 +1577,102 @@ function saveCustomSong() {
     artist,
     lyrics,
     difficulty,
+    genre,
     isCustom: true,
   };
 
-  allSongs.push(newSong);
+  if (editingSongId) {
+    // Update existing song
+    if (currentUser) {
+      try {
+        const response = await fetch(`/api/songs/custom/${editingSongId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newSong),
+        });
 
-  hideCustomSongModal();
-  applyFilters(); // Re-apply current filters to include new song if it matches
-  showNotification(
-    `"${title}" has been added to your song library!`,
-    "success"
-  );
+        if (response.ok) {
+          // Update local array
+          const index = allSongs.findIndex((s) => s._id === editingSongId);
+          if (index !== -1) {
+            allSongs[index] = { ...allSongs[index], ...newSong };
+          }
+          hideCustomSongModal();
+          applyFilters();
+          showNotification(`"${title}" updated successfully!`, "success");
+        } else {
+          showNotification("Failed to update song.", "error");
+        }
+      } catch (error) {
+        showNotification("Error updating song.", "error");
+      }
+    }
+    return;
+  }
+
+  if (currentUser) {
+    try {
+      const response = await fetch("/api/songs/custom", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newSong),
+      });
+
+      if (response.ok) {
+        allSongs.push(newSong);
+        hideCustomSongModal();
+        applyFilters();
+        showNotification(`"${title}" saved to your library!`, "success");
+      } else {
+        showNotification("Failed to save song.", "error");
+      }
+    } catch (error) {
+      showNotification("Error saving song.", "error");
+    }
+  } else {
+    // Temporary save for guests
+    allSongs.push(newSong);
+    hideCustomSongModal();
+    applyFilters();
+    showNotification(`"${title}" added temporarily (login to save)!`, "info");
+  }
 }
+
+window.deleteCustomSong = async (id, title) => {
+  if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+
+  try {
+    const response = await fetch(`/api/songs/custom/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      showNotification(`"${title}" deleted successfully.`, "success");
+      // Remove from local array and re-render
+      allSongs = allSongs.filter((s) => s._id !== id);
+      applyFilters();
+    } else {
+      showNotification("Failed to delete song.", "error");
+    }
+  } catch (error) {
+    showNotification("Error deleting song.", "error");
+  }
+};
+
+window.editCustomSong = (song) => {
+  editingSongId = song._id;
+  document.getElementById("customTitle").value = song.title;
+  document.getElementById("customArtist").value = song.artist;
+  document.getElementById("customLyrics").value = song.lyrics;
+  document.getElementById("customDifficulty").value = song.difficulty;
+  document.getElementById("customGenre").value = song.genre;
+
+  // Update modal UI for editing
+  document.querySelector("#customSongModal h2").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Custom Song';
+  document.getElementById("saveSongBtn").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Song';
+
+  showModal("customSongModal");
+};
 
 async function handleContactSubmission() {
   const name = document.getElementById("contactName").value.trim();
@@ -1615,11 +1745,25 @@ function populateAndShowStartModal(song) {
 }
 
 function showNotification(message, type = "info") {
+  // Play notification sound
+  if (type === "success") {
+    successSound.currentTime = 0;
+    successSound.play().catch(() => {});
+  } else {
+    notificationSound.currentTime = 0;
+    notificationSound.play().catch(() => {});
+  }
+
   const notification = document.createElement("div");
   notification.className = `notification notification--${
     type === "error" ? "error" : type === "success" ? "success" : "info"
   }`;
-  notification.textContent = message;
+
+  let icon = '<i class="fa-solid fa-circle-info"></i>';
+  if (type === "success") icon = '<i class="fa-solid fa-circle-check"></i>';
+  if (type === "error") icon = '<i class="fa-solid fa-circle-exclamation"></i>';
+
+  notification.innerHTML = `${icon} <span>${message}</span>`;
   document.body.appendChild(notification);
 
   // Hide then remove after a short timeout using CSS class
@@ -1822,12 +1966,18 @@ async function handleRegister() {
   const username = document.getElementById("registerUsername").value;
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
+  const gender = document.getElementById("registerGender").value;
+
+  if (!gender) {
+    showNotification("Please select your gender.", "error");
+    return;
+  }
 
   try {
     const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, email, password, gender }),
     });
     const data = await response.json();
 
@@ -2592,35 +2742,53 @@ function flashKeyError(key) {
 // --- Background Particle Animation ---
 let animationFrameId;
 let animationIntervalId; // For controlling frame rate
+let backgroundResizeHandler;
 
 function initializeBackgroundAnimation() {
   if (animationIntervalId) clearInterval(animationIntervalId);
+
+  if (backgroundResizeHandler) {
+    window.removeEventListener("resize", backgroundResizeHandler);
+    backgroundResizeHandler = null;
+  }
 
   const canvas = document.getElementById("background-animation");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
+  const fontSize = 16;
+  const characters = "abcdefghijklmnopqrstuvwxyz1234567890";
+  let columns = 0;
+  let drops = [];
+
   const setCanvasSize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+    const newColumns = Math.floor(canvas.width / fontSize);
+    const newDrops = [];
+
+    for (let x = 0; x < newColumns; x++) {
+      if (x < drops.length) {
+        newDrops[x] = drops[x];
+      } else {
+        newDrops[x] = Math.floor(Math.random() * (canvas.height / fontSize));
+      }
+    }
+
+    columns = newColumns;
+    drops = newDrops;
   };
   setCanvasSize();
-  window.addEventListener("resize", setCanvasSize);
+
+  backgroundResizeHandler = setCanvasSize;
+  window.addEventListener("resize", backgroundResizeHandler);
 
   const isLightMode = document.body.classList.contains("light-mode");
   const backgroundColor = isLightMode
     ? "rgba(244, 247, 249, 0.1)"
     : "rgba(33, 38, 46, 0.1)";
   const characterColor = isLightMode ? "rgba(9, 153, 9, 0.7)" : "#00aaff";
-
-  const characters = "abcdefghijklmnopqrstuvwxyz1234567890";
-  const fontSize = 16;
-  const columns = Math.floor(canvas.width / fontSize);
-
-  const drops = [];
-  for (let x = 0; x < columns; x++) {
-    drops[x] = Math.floor(Math.random() * (canvas.height / fontSize));
-  }
 
   function draw() {
     // Draw a semi-transparent rectangle to create the fading trail effect
@@ -2661,6 +2829,10 @@ function checkMobileView() {
 
 function handleMobileTabSwitch(e) {
   const targetTab = e.currentTarget.dataset.tab;
+
+  if (targetTab === "reviews" && !currentUser) {
+    showModal("loginModal");
+  }
 
   // Update tab UI
   document
@@ -2792,20 +2964,40 @@ async function loadMobileReviews() {
     };
 
     list.innerHTML = data
-      .map(
-        (item) => `
+      .map((item) => {
+        const replyHtml = item.reply
+          ? `
+            <div class="feedback-reply">
+              <div class="reply-header"><i class="fa-solid fa-reply"></i> Admin Response</div>
+              <div class="reply-message">${item.reply}</div>
+            </div>`
+          : "";
+
+        const adminControls =
+          currentUser && currentUser.isAdmin && !item.reply
+            ? `
+            <button class="reply-btn" onclick="window.toggleReplyForm('${item._id}')">Reply</button>
+            <div id="reply-form-${item._id}" class="reply-form">
+              <textarea id="reply-input-${item._id}" class="form-input reply-textarea" placeholder="Write a reply..."></textarea>
+              <button class="btn btn-primary btn-sm" onclick="window.submitReply('${item._id}')">Post Reply</button>
+            </div>`
+            : "";
+
+        return `
       <div class="feedback-item">
         <div class="feedback-header">
           <span class="feedback-author">${item.username}</span>
           <span class="feedback-date">${renderStars(item.rating || 0)}</span>
         </div>
         <div class="feedback-message">${item.message}</div>
+        ${replyHtml}
+        ${adminControls}
         <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">${new Date(
           item.date
         ).toLocaleDateString()}</div>
       </div>
-    `
-      )
+    `;
+      })
       .join("");
   } catch (e) {
     document.getElementById("feedbackList").innerHTML =
@@ -2836,6 +3028,35 @@ async function submitMobileReview(rating) {
     showNotification("Failed to post review", "error");
   }
 }
+
+// Expose admin functions to window for inline onclick handlers
+window.toggleReplyForm = (id) => {
+  const form = document.getElementById(`reply-form-${id}`);
+  if (form)
+    form.style.display = form.style.display === "none" ? "block" : "none";
+};
+
+window.submitReply = async (id) => {
+  const input = document.getElementById(`reply-input-${id}`);
+  const reply = input.value.trim();
+  if (!reply) return;
+
+  try {
+    const res = await fetch(`/api/feedback/${id}/reply`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reply }),
+    });
+    if (res.ok) {
+      showNotification("Reply posted!", "success");
+      loadMobileReviews();
+    } else {
+      showNotification("Failed to post reply", "error");
+    }
+  } catch (e) {
+    showNotification("Error posting reply", "error");
+  }
+};
 
 function setupMobileSwipe() {
   const contentArea = document.querySelector(".mobile-content-area");
