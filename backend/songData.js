@@ -237,7 +237,29 @@ export const songDatabase = [
     genre: "Gospel",
     minAccuracy: 92,
     lyrics:
-      "You are too faithful to fail me. You are too faithful to disappoint me. You've proven Yourself in my life and I've come to realize. You are too faithful to fail me. You are too loving to leave me. You are too faithful to fail me. You are too faithful to fail me. You are too faithful to disappoint me. You've proven Yourself in my life and I've come to realize. You are too faithful to fail me.",
+      `Oh oh oh
+Hey yah nah nah nah sha nah neh yah dey
+Thank you Jesus
+Hallelujah
+You are who you are yesterday today and forever more
+What you say is what you do
+You never fail you never change
+You are faithful till the end
+Faithful God I worship you
+I worship yo u u
+You're too faithful to fail me
+You're too faithful to disappoint me
+You've proven yourself in my life
+And I've come to realize
+You're too faithful to fail me
+You're too faithful to fail me oh uh Jesus
+You're too faithful to disappoint me
+You've proven yourself in my life
+And I've come to realize
+You're too faithful to fail me
+Hey dah dah dah dah dah dah dah
+Oh oh dah dah dah dah hey eh dah dah dah day
+Yes we worship you are you are God`
   },
   {
     title: "Daddy Wey Pamper",
