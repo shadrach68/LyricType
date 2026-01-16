@@ -25,7 +25,9 @@ body {
   background-color: var(--bg-color);
   min-height: 100%;
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
   color-scheme: dark;
 }
 
@@ -604,12 +606,14 @@ body.light-mode {
 /* New Song Card Design for Light Mode */
 body.light-mode .song-card {
   background: #e6d4d4;
-  box-shadow: 0 4px 6px -1px var(--shadow-color),
+  box-shadow:
+    0 4px 6px -1px var(--shadow-color),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body.light-mode .song-card:hover {
-  box-shadow: 0 10px 15px -3px var(--shadow-color),
+  box-shadow:
+    0 10px 15px -3px var(--shadow-color),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
@@ -750,7 +754,9 @@ body.light-mode .mobile-notice-card {
   transform: translateY(-50%);
   color: var(--text-color-muted);
   pointer-events: none;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
   font-size: 0.9rem;
   z-index: 1;
 }
@@ -2179,13 +2185,14 @@ body.light-mode .lesson-card .lesson-time {
 
 .reply-btn {
   margin-top: 5px;
-  font-size: 0.8rem;
-  color: #888;
+  font-size: 0.9rem;
+  color: var(--primary-color);
   cursor: pointer;
   background: none;
   border: none;
   text-decoration: underline;
-  padding: 0;
+  padding: 10px;
+  display: inline-block;
 }
 
 .reply-btn:hover {
@@ -2260,11 +2267,41 @@ body.light-mode .lesson-card .lesson-time {
   border: none;
   color: var(--text-color-muted);
   cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0 5px;
+  font-size: 1.1rem;
+  padding: 10px;
   transition: color 0.2s;
 }
 
 .edit-reply-btn:hover {
   color: var(--primary-color);
+}
+
+.edit-review-btn {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 5px;
+  margin-left: 5px;
+  transition: color 0.2s;
+}
+
+.edit-review-btn:hover {
+  color: var(--primary-color);
+}
+
+.delete-review-btn {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 5px;
+  margin-left: 5px;
+  transition: color 0.2s;
+}
+
+.delete-review-btn:hover {
+  color: var(--incorrect-color);
 }

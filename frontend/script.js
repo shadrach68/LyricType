@@ -886,6 +886,13 @@ function setupEventListeners() {
     .getElementById("cancelDeleteAccountBtn")
     .addEventListener("click", () => hideModal("deleteAccountConfirmModal"));
 
+  // Delete Review Confirmation Modal
+  document.getElementById("confirmDeleteReviewBtn").addEventListener("click", handleConfirmDeleteReview);
+  document.getElementById("cancelDeleteReviewBtn").addEventListener("click", () => hideModal("deleteReviewConfirmModal"));
+  document.getElementById("deleteReviewConfirmModal").addEventListener("click", (e) => {
+    if (e.target.id === "deleteReviewConfirmModal") hideModal("deleteReviewConfirmModal");
+  });
+
   // Global keydown listener for training
   document.addEventListener("keydown", handleTrainingInput);
 
@@ -2208,6 +2215,36 @@ async function handleDeleteAccount() {
   }
 }
 
+async function handleConfirmDeleteReview() {
+  const id = document.body.dataset.reviewToDelete;
+  if (!id) return;
+
+  const btn = document.getElementById("confirmDeleteReviewBtn");
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`/api/feedback/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      showNotification("Review deleted successfully.", "success");
+      loadMobileReviews();
+      hideModal("deleteReviewConfirmModal");
+    } else {
+      showNotification("Failed to delete review.", "error");
+    }
+  } catch (e) {
+    showNotification("Error deleting review.", "error");
+  } finally {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    delete document.body.dataset.reviewToDelete;
+  }
+}
+
 function updateUserUI() {
   const accountBtn = document.getElementById("accountBtn");
   const icon = accountBtn.querySelector(".sidebar-icon");
@@ -2241,6 +2278,14 @@ function updateUserUI() {
     } else {
       mobileLogoutBtn.textContent = "Login";
       mobileLogoutBtn.classList.remove("text-danger");
+    }
+  }
+
+  // Refresh mobile reviews if active to ensure Admin buttons appear
+  if (window.innerWidth <= 992) {
+    const activeTab = document.querySelector(".mobile-tab.active");
+    if (activeTab && activeTab.dataset.tab === "reviews") {
+      loadMobileReviews();
     }
   }
 }
@@ -3029,6 +3074,7 @@ async function loadMobileReviews() {
     list.innerHTML = data
       .map((item) => {
         const isAdmin = currentUser && currentUser.isAdmin;
+        const isAuthor = currentUser && currentUser.username === item.username;
         let replySection = "";
 
         if (item.reply) {
@@ -3058,7 +3104,7 @@ async function loadMobileReviews() {
         } else if (isAdmin) {
           replySection = `
             <button class="reply-btn" onclick="window.toggleReplyForm('${item._id}')">Reply</button>
-            <div id="reply-form-${item._id}" class="reply-form">
+            <div id="reply-form-${item._id}" class="reply-form" style="display:none;">
               <textarea id="reply-input-${item._id}" class="form-input reply-textarea" placeholder="Write a reply..."></textarea>
               <button class="btn btn-primary btn-sm" onclick="window.submitReply('${item._id}', false)">Post Reply</button>
             </div>`;
@@ -3068,9 +3114,57 @@ async function loadMobileReviews() {
       <div class="feedback-item">
         <div class="feedback-header">
           <span class="feedback-author">${item.username}</span>
-          <span class="feedback-date">${renderStars(item.rating || 0)}</span>
+          <div style="display:flex; align-items:center;">
+            <span class="feedback-date">${renderStars(item.rating || 0)}</span>
+            ${
+              isAuthor
+                ? `<button class="edit-review-btn" onclick="window.toggleEditReview('${item._id}')"><i class="fa-solid fa-pen"></i></button>
+                   <button class="delete-review-btn" onclick="window.deleteReview('${item._id}')"><i class="fa-solid fa-trash"></i></button>`
+                : ""
+            }
+          </div>
         </div>
-        <div class="feedback-message">${item.message}</div>
+        <div id="review-display-${item._id}" class="feedback-message">${
+          item.message
+        }</div>
+        ${
+          isAuthor
+            ? `
+        <div id="edit-review-form-${
+          item._id
+        }" class="edit-review-form" style="display:none; margin-bottom:10px;">
+            <div class="star-rating-edit" id="star-rating-edit-${
+              item._id
+            }" data-rating="${
+                item.rating || 0
+              }" style="margin-bottom:5px; color:gold; cursor:pointer; font-size:1.2rem;">
+                ${[1, 2, 3, 4, 5]
+                  .map(
+                    (n) =>
+                      `<i class="${
+                        n <= (item.rating || 0) ? "fa-solid" : "fa-regular"
+                      } fa-star" onclick="window.setEditRating('${
+                        item._id
+                      }', ${n})"></i>`
+                  )
+                  .join("")}
+            </div>
+            <textarea id="edit-review-input-${
+              item._id
+            }" class="feedback-textarea" style="height:60px;">${
+                item.message
+              }</textarea>
+            <div style="display:flex; gap:10px; margin-top:5px;">
+                <button class="btn btn-primary btn-sm" onclick="window.submitEditReview('${
+                  item._id
+                }')">Save</button>
+                <button class="btn btn-secondary btn-sm" onclick="window.toggleEditReview('${
+                  item._id
+                }')">Cancel</button>
+            </div>
+        </div>`
+            : ""
+        }
         ${replySection}
         <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">${new Date(
           item.date
@@ -3087,6 +3181,7 @@ async function loadMobileReviews() {
 
 async function submitMobileReview(rating) {
   const message = document.getElementById("mobileFeedbackInput").value.trim();
+  const submitBtn = document.getElementById("submitFeedbackBtn");
 
   if (!rating) {
     showNotification("Please select a star rating", "error");
@@ -3097,15 +3192,27 @@ async function submitMobileReview(rating) {
     return;
   }
 
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Posting...';
+  submitBtn.disabled = true;
+
   try {
-    await fetch("/api/feedback", {
+    const res = await fetch("/api/feedback", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message, rating }),
     });
-    loadMobileReviews(); // Reload list
+    if (res.ok) {
+      loadMobileReviews(); // Reload list
+    } else {
+      showNotification("Failed to post review", "error");
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }
   } catch (e) {
     showNotification("Failed to post review", "error");
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
   }
 }
 
@@ -3151,6 +3258,68 @@ window.submitReply = async (id, isEdit = false) => {
   } catch (e) {
     showNotification("Error saving reply", "error");
   }
+};
+
+window.toggleEditReview = (id) => {
+  const display = document.getElementById(`review-display-${id}`);
+  const form = document.getElementById(`edit-review-form-${id}`);
+  if (display && form) {
+    if (form.style.display === "none") {
+      form.style.display = "block";
+      display.style.display = "none";
+    } else {
+      form.style.display = "none";
+      display.style.display = "block";
+    }
+  }
+};
+
+window.setEditRating = (id, rating) => {
+  const container = document.getElementById(`star-rating-edit-${id}`);
+  if (!container) return;
+  container.dataset.rating = rating;
+  const stars = container.querySelectorAll("i");
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.className = "fa-solid fa-star";
+    } else {
+      star.className = "fa-regular fa-star";
+    }
+  });
+};
+
+window.submitEditReview = async (id) => {
+  const input = document.getElementById(`edit-review-input-${id}`);
+  const ratingContainer = document.getElementById(`star-rating-edit-${id}`);
+  const message = input.value.trim();
+  const rating = parseInt(ratingContainer.dataset.rating);
+
+  if (!message) {
+    showNotification("Review cannot be empty", "error");
+    return;
+  }
+
+  try {
+    const res = await fetch(`/api/feedback/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, rating }),
+    });
+
+    if (res.ok) {
+      showNotification("Review updated successfully!", "success");
+      loadMobileReviews();
+    } else {
+      showNotification("Failed to update review.", "error");
+    }
+  } catch (e) {
+    showNotification("Error updating review.", "error");
+  }
+};
+
+window.deleteReview = (id) => {
+  document.body.dataset.reviewToDelete = id;
+  showModal("deleteReviewConfirmModal");
 };
 
 function setupMobileSwipe() {

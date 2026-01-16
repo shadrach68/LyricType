@@ -102,4 +102,66 @@ router.post("/api/contact", isAuthenticated, async (req, res) => {
   }
 });
 
+// Update a review (Protected: requires login and ownership)
+router.put("/api/feedback/:id", isAuthenticated, async (req, res) => {
+  const { id } = req.params;
+  const { message, rating } = req.body;
+  const userId = req.session.user.id;
+
+  if (!message || !rating) {
+    return res.status(400).json({ message: "Message and rating are required." });
+  }
+
+  try {
+    const feedback = await feedbackCollection().findOne({ _id: new ObjectId(id) });
+
+    if (!feedback) {
+      return res.status(404).json({ message: "Review not found." });
+    }
+
+    if (feedback.userId.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized: You can only edit your own reviews." });
+    }
+
+    await feedbackCollection().updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { message, rating: parseInt(rating) } }
+    );
+
+    res.json({ message: "Review updated successfully." });
+  } catch (error) {
+    console.error("Error updating feedback:", error);
+    res.status(500).json({ message: "Failed to update review." });
+  }
+});
+
+// Delete a review (Protected: requires login and ownership)
+router.delete("/api/feedback/:id", isAuthenticated, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.session.user.id;
+
+  try {
+    // Delete if the user is the author OR if the user is an admin (optional, but good for moderation)
+    // For now, we check ownership via the query to ensure safety
+    const result = await feedbackCollection().deleteOne({
+      _id: new ObjectId(id),
+      userId: new ObjectId(userId) 
+    });
+
+    if (result.deletedCount === 0) {
+      // If not deleted, check if it exists but belongs to someone else
+      const exists = await feedbackCollection().findOne({ _id: new ObjectId(id) });
+      if (exists) {
+        return res.status(403).json({ message: "Unauthorized." });
+      }
+      return res.status(404).json({ message: "Review not found." });
+    }
+
+    res.json({ message: "Review deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting feedback:", error);
+    res.status(500).json({ message: "Failed to delete review." });
+  }
+});
+
 export default router;
