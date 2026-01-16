@@ -237,10 +237,7 @@ export const songDatabase = [
     genre: "Gospel",
     minAccuracy: 92,
     lyrics:
-      `Oh oh oh
-Hey yah nah nah nah sha nah neh yah dey
-Thank you Jesus
-Hallelujah
+      `Hallelujah
 You are who you are yesterday today and forever more
 What you say is what you do
 You never fail you never change
@@ -268,7 +265,28 @@ Yes we worship you are you are God`
     genre: "Gospel",
     minWpm: 22,
     lyrics:
-      "Even when I fall your hand, You still dey hold my hand. Lover of my soul, You no dey break my heart. I will sing about your mercy. I will sing about your grace. Na you dey burst my brain. Daddy wey dey pamper. Daddy wey dey bless. Daddy wey dey pamper. Daddy wey dey bless. Love wey no dey fail. Love wey no dey change. Love wey no dey lie. Na you dey burst my brain.",
+      `Even when I fall your hand
+You still dey hold my hand
+Lover of my soul, You nor dey break my heart
+I'll sing about your mercy
+I'll sing about your grace
+Na u dey burst my brain
+Every night and day
+Daddy wey dey pamper
+Daddy wey Dey bless
+Forever you're my father
+Na u dey give me rest
+When I look around
+I see your faithfulness
+I'll bow down on my knees
+Cos na u wey be the best
+Oghenetega
+You, you're re clpha and omega
+Your goodness and mercy dey follow me up
+Like say I be new convert
+Who can battle with the Lord na
+Not even May weather
+Lord Jesus`
   },
   {
     title: "Miracle No Dey Tire Jesus",
@@ -277,7 +295,23 @@ Yes we worship you are you are God`
     genre: "Gospel",
     minAccuracy: 90,
     lyrics:
-      "Miracle no dey tire Jesus. He is the same yesterday, today and forever more. What He says is what He does. He never fails, He never changes. Miracle no dey tire Jesus. Miracle no dey tire Jesus. He's the same yesterday, today and forever more. What He says is what He does. He never fails, He never changes. Miracle no dey tire Jesus.",
+      `Miracle no dey tire Jesus oh
+To bless person no dey tire Jesus oh
+He don do am before, He still dey do am again, chai
+Miracle no dey tire Jesus
+Miracle no dey tire Jesus o (mix-play) (oh, na, na, na)
+To bless person no dey tire Jesus (oh, na, na, na)
+He don do am before, He still dey do am again, chai
+Miracle no dey tire Jesus
+From my cradle days 'til this very day
+I have never ever heard or seeing my Jesus fail
+From before time began, He has never ever change
+He's the same today, just as He was yesterday
+Miracle opor (opor, por-por, opor)
+Goodness, favour, mercy, e sure (e sure, sure, sure, e sure)
+My brother, tell Him what you want
+He'd give you everything and more
+Miracle no dey tire Jesus`
   },
   // Steve Crown
   {
@@ -287,7 +321,30 @@ Yes we worship you are you are God`
     genre: "Gospel",
     minWpm: 20,
     lyrics:
-      "You are great, yes You are, holy one. Walked upon the sea, raised the dead. You reign in majesty, mighty God. Everything written about You is great. You are great, You are great, You are great. You are great, You are great, You are great. Demons tremble at your presence. What a mighty God we serve. Glory, glory, Hallelujah. Everything written about You is great.",
+      `You are great yes you are holy one
+Walked upon the sea rise the dead
+Reign in majesty mighty God
+Everything written about you is great
+You are great yes you are holy one
+Walked upon the sea rise the dead
+You reign in majesty mighty God
+Everything written about you is great
+You are great you are great
+You are great you are great
+You are great you are great oh yeah
+You are great say you are great
+You are great say you are great
+You are great everything
+Everything written about you is great
+You are great you are great
+You are great you are great oh you are great you are
+You are great oh yea yea yeah
+You are great say you are great you are
+You are great we worship you today
+You are great everything
+Everything written about you is great
+Worship you today
+Give you all the praise e yeah ha ha ha`
   },
   {
     title: "You Are Yahweh",
@@ -296,7 +353,23 @@ Yes we worship you are you are God`
     genre: "Gospel",
     minAccuracy: 93,
     lyrics:
-      "You are Yahweh, You are Yahweh. You are Yahweh, Alpha and Omega. You are Yahweh, You are Yahweh. You are Yahweh, Alpha and Omega. We worship You Lord. We worship You Lord. You are Yahweh, Alpha and Omega. We worship You Lord. We worship You Lord. You are Yahweh, Alpha and Omega.",
+      `You are the God who was, who is and is to come
+Jesus, Jesus
+And in You I trust, my life is in Your hands, Jesus
+Jesus, You are the miracle working God
+And You are Yahweh, eh-eh-eh
+You are Yahweh
+You are Yahweh, eh-eh-eh
+You are Yahweh
+You are Yahweh, Alpha and Omega (we reverence You, Lord)
+You are Yahweh, Alpha and Omega
+Express yourself in the Holy Ghost
+You are Yahweh, Alpha and Omega
+You are Yahweh, Alpha and Omega
+Fate is rising right now (miracle working God)
+The power of God is rising right now
+Lift your voices, His presence is here
+Say "You are Yahweh", You are`
   },
   {
     title: "Angels Bow",
@@ -305,7 +378,22 @@ Yes we worship you are you are God`
     genre: "Gospel",
     minWpm: 26,
     lyrics:
-      "Angels bow before your throne. You are God and God alone. You are God and God alone. We worship You, we worship You. You are God and God alone. We worship You, we worship You. You are God and God alone. Angels bow before your throne. You are God and God alone. You are God and God alone.",
+      `Father we thank You
+Something is happening ooh
+Angels bow before Your Throne
+Miracles happening in Your Name
+What a Mighty God You are
+Angels bow before Your Throne
+Miracles happening in Your Name
+What a Mighty God You are
+Angels bow before Your Throne
+Angels bow before Your Throne
+Miracles happening in Your Name ehhyy
+What a Mighty God You are
+Angels bow before Your Throne
+Angels bow before Your Throne
+Miracles happen in Your Name
+What a Mighty God You are ehhyy`
   },
   // Nathaniel Bassey
   {
@@ -833,7 +921,26 @@ Yeah, yeah, yeah`
     genre: "Afrobeats",
     minWpm: 25,
     lyrics:
-      "My baby, my valentine. Girl, na you dey make my temperature dey rise. If you leave me, I go die. I swear, you are like the oxygen I need to survive. I'll be honest. Your loving dey totori me. I am so obsessed. I want to chop your nkwobi. Ule, your body dey baka mi. I am so obsessed. I want to chop your nkwobi. Ah, ah, ah, ah. Love nwantiti.",
+     `My baby, my Valentine, yeah
+Girl, na you dey make my temperature dey rise
+If you leave me, I go die, I swear
+You are like the oxygen I need to survive
+I'll be honest
+Your loving dey totori me
+I am so obsessed
+I want to chop your nkwobi
+Ule, your body dey gbakam isi
+Ule, open am make I see
+Ule, nyem love nwantiti
+Wey fit make a bad man sing, oh, ahh
+Ah-ah-ah-ah-ah-ah
+Ah-ah-ah-ah-ah-ah, ah-ah-ah
+Ah-ah-ah-ah-ah-ah
+Ah-ah-ah-ah-ah-ah, ah-ah-ah
+Ah-ah-ah-ah-ah-ah
+Ah-ah-ah-ah-ah-ah, ah-ah-ah
+Ah-ah-ah-ah-ah-ah
+Ah-ah-ah-ah-ah-ah, ahn ahn`
   },
   {
     title: "Emiliana",
@@ -842,7 +949,19 @@ Yeah, yeah, yeah`
     genre: "Afrobeats",
     minAccuracy: 90,
     lyrics:
-      "Emiliana, Emiliana, Emiliana. Oh no, oh no. Kiss me through the cellular, kiss me through the phone. Can't you see I'm into ya? Can't you see I'm in love? Kiss me through the cellular, kiss me through the phone. You're the only one for me. You're the only one I need. Emiliana, oh my Emiliana.",
+    `All because of you, I be on the phone, all night long, oh
+No be small thing wey you do to me, oh, no, no, no
+I be on my business, shawty
+But you be on my mind, shawty
+Ebelebe oloma, my honey, aah-ah
+Kiss me through the cellular, kiss me through the phone
+Can't you see I'm into ya? Can't you see I'm in love?
+Kiss me through the cellular, kiss me through the phone
+You're messin' with my medulla, highkey, I don kolo, oh, no, no
+Emiliana, oh, Emiliana, oh, Emiliana, oh, no
+Emiliana, oh, Emiliana, oh, Emiliana, oh, no
+You're one in a million, oh, in a million, oh, in a million, oh, no
+My Emiliana, oh, Emiliana, oh, Emiliana, oh, no`
   },
   {
     title: "Felony",
@@ -851,7 +970,26 @@ Yeah, yeah, yeah`
     genre: "Afrobeats",
     minWpm: 28,
     lyrics:
-      "Baby, you know say na you I dey feel. Any other girl is a counterfeit. I know say the feeling is real. I know say the feeling is real. 'Cause you make me commit felony. You make me commit felony. I go sleep for cell, I no mind. I go sleep for cell, I no mind. 'Cause you make me commit felony.",
+      `Mmmm, mmm, mmm, oooh
+Mmmm, mmm, mmm, ooooh
+Ckay, yo-yo dey for you, oh
+Baby one in a million, oh
+Most beautiful lady I know
+You're everything I need and more
+Kele plenty for DM oh
+But me I no dey see them, oh
+Pay no attention I free them, oh
+Oh, no
+Inna my song yeah, in the melody
+I go sleep for cell
+If loving you is a felony
+For so long
+I've been running away from love
+But last, last I don fall in the love, oh, no
+Mmmm, mmm, mmm
+(I don fall yakata) oooh
+Mmmm, mmm, mmm
+(I don fall yakata) oooh`
   },
   // Johnny Drille
   {
@@ -861,7 +999,25 @@ Yeah, yeah, yeah`
     genre: "R&B",
     minWpm: 25,
     lyrics:
-      "I know sometimes it's hard for you to say it. But I know you're not okay. I know you're trying to be strong. But you don't have to be alone. How are you, my friend? How do you do, my friend? I know say e don tey. That I never call to ask you. How are you, my friend?",
+     `I know sometimes e be like say
+Nobody send you, that one na lie
+I dey for you my friend
+Padi no vex for me
+Say I never call you since
+But I hope that you are well
+I hope your market sell
+Every day I dey pray for you
+Make baba God bless you
+I never forget you
+How I go forget you?
+See my shoulder
+Make you rest upon me
+You know I got you
+Na me be your friend indeed
+The money don show now
+I don keep some for you
+You no go suffer rara
+'Cause anything I get na for me and you, yeah`
   },
   {
     title: "Romeo & Juliet",
@@ -870,7 +1026,25 @@ Yeah, yeah, yeah`
     genre: "R&B",
     minAccuracy: 90,
     lyrics:
-      "My darling, I've been waiting for you. I've been looking for you. I've been searching for you. You are the one I've been waiting for. You are the one I've been looking for. You are the one I've been searching for. Romeo and Juliet. Romeo and Juliet.",
+      `Love is a beautiful thing
+This love na for you and me
+Be my Juliet and I'll be your Romeo, my love
+It's the hand of God na Him bring you to me
+It's indescribable what you mean to me
+Would you be my Juliet and I'll be your Romeo
+My love, o yeah-yeah
+Would you be my Juliet and I'll be your Romeo
+My love, my love o
+And when the Stars come out tonight
+I'll think about you my love, my love o
+And in the dark I see your lovely eyes
+Darling you are my light you are my love
+Like MTN I go find you everywhere you go
+And like Joke and Jake our love will never grow old
+Please be my Juliet and I'll be your Romeo
+My love, o yeah-yeah
+Would you be my Juliet and I'll be your Romeo
+My love, my love o`
   },
   {
     title: "Wait for Me",
@@ -879,7 +1053,25 @@ Yeah, yeah, yeah`
     genre: "R&B",
     minWpm: 20,
     lyrics:
-      "I will wait for you. I will wait for you. Even if it takes forever. I will wait for you. I will wait for you. Even if it takes a lifetime. I will wait for you. I will wait for you. I will wait for you.",
+     `I don't know when I'm coming back
+I'll be gone for a little while
+But I will keep myself for me and you
+I'll be back for you
+I don't know what the future brings
+But I want you to be with me
+I go dey hope and pray, say make you wait for me
+'Cause I'll come back for you
+Darling, you hold my love
+You are my price
+And I'll run to the finish line
+My love, I no go leave you run
+I no go bounce your call
+You'll be always on my mind, yeah-yeah
+I'll be so far away
+Promise you'll wait for me
+I go think of you every day my love, yeah-yeah
+I may not come today, but I'll be with you again
+I go dey pray for you every day, my love, yeah-yeah`
   },
   // Tems
   {
@@ -889,25 +1081,82 @@ Yeah, yeah, yeah`
     genre: "R&B",
     minAccuracy: 92,
     lyrics:
-      "I said, five in the morning. I wake up to fight for my earnings. Fear in my mind is a warning. Praying to the one you rely on. I've been wandering all day. I try to be okay. I try to be okay. I really need to free my mind now. Be at peace with my soul.",
+      `I said, "Five in the morning"
+I wake up to fight for my earnings
+The fear in my mind is a warning
+Praying to the one you rely in
+I've been wandering all day
+I try to be fine but I can't be
+The noise in my mind wouldn't leave me
+I try to get by but I'm burning
+And behind my mind it runs
+All these thoughts have troubled me
+Fighting to give up my pain
+Fighting to be on my lane
+My mind running to the other side
+When it's time to live my life
+Then it tries to take me out
+Tell you what I need right here
+I really need, I really need timе now
+I really need, I need a free mind now
+I really need, I really need minе now
+I really need, I need to free my mind now
+I really need, I really need time now
+I really need, I need a free mind now
+I really need, I really need my mind now, oh yeah`
   },
   {
-    title: "Higher",
+    title: "Crazy things",
     artist: "Tems",
     difficulty: "easy",
     genre: "R&B",
     minWpm: 22,
     lyrics:
-      "Tell me why you're crying. Tell me why you're lying. I can see the pain in your eyes. I can see the pain in your eyes. Higher, higher. I want to go higher. Higher, higher. I want to go higher.",
+     `All you do is lie and lie and lie
+All you do is try and try and try
+You don't even know the kind of things
+But you try to tell me all these things
+Give me some time, I need peace
+I'ma need space some days
+And I'm just tryna do my thing
+And I'm just tryna get my way
+So you need someone to deceive
+And you're trying to think that I'm the one for you
+But don't you see, you're not everything
+And I know you're not the one for me
+Crazy tings are happening
+Crazy tings are happening
+If you need somebody's craze
+You fit chop somebody's craze
+Crazy tings are happening
+Crazy tings are happening
+If you need somebody's craze
+You fit chop somebody's craze`
   },
   {
-    title: "Me & U",
+    title: "Damages",
     artist: "Tems",
     difficulty: "medium",
     genre: "R&B",
     minAccuracy: 94,
     lyrics:
-      "Give me one break, I need faith. Faith to believe you, faith to receive you. Give me something, I'm lacking. I don't need nothing, you are my everything. Only me and you. Only me and you. Only me and you.",
+     `Back then when I was a new youngie
+Surely you were tryna run on me
+I've been, I been going on my own
+I been, I been doing things unknown
+Since day one you running right back
+Save the drama you running off track
+Is a one life, you tell me one life
+One time, you tell me one time
+Open your eyes, open your eyes baby
+Can you be wise? 'Cause you are my pride baby
+I'm on a way, I'm on the run baby
+Leave me alone, leave me alone, take it back now
+I put you on there
+Say you want chance to hold it on me
+I finna hold it back
+Turn you right 'round
+Taking my way`
   },
   // Akon
   {
@@ -926,7 +1175,24 @@ Yeah, yeah, yeah`
     genre: "R&B",
     minAccuracy: 90,
     lyrics:
-      "Lonely, I'm Mr. Lonely. I have nobody for my own. I'm so lonely, I'm Mr. Lonely. I have nobody for my own. I'm so lonely. Yo, this one here goes out to all my players out there, man. You know, that got that one good girl whose always been there like, took all the bullshit.",
+      `Yeah, I woke up in the middle of the night
+And I noticed my girl wasn't by my side
+Coulda sworn I was dreamin' for her
+I was feenin' so I had to take a little ride
+Backtracking over these few years
+Tryin' ta figure out what I do to make it go bad
+'Cause ever since my girl left me
+My whole life came crashing and I'm so
+Lonely (so lonely)
+I'm Mr. Lonely (Mr. Lonely)
+I have nobody (I have nobody)
+For my own (to call my own girl)
+I'm so lonely (so lonely)
+I'm Mr. Lonely (Mr. Lonely)
+I have nobody (I have nobody)
+For my own (to call my own girl)
+I am so lonely`
+
   },
   {
     title: "Beautiful",
