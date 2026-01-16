@@ -8,7 +8,16 @@ const router = express.Router();
 
 // Save a new score for the logged-in user
 router.post("/api/scores", isAuthenticated, async (req, res) => {
-  const { wpm, accuracy, errors, songTitle, artist, difficulty, timeTaken, date } = req.body;
+  const {
+    wpm,
+    accuracy,
+    errors,
+    songTitle,
+    artist,
+    difficulty,
+    timeTaken,
+    date,
+  } = req.body;
   const userId = req.session.user.id;
 
   const newScore = {
@@ -68,12 +77,18 @@ router.get("/api/scores", isAuthenticated, async (req, res) => {
 // Get leaderboard (best player per song)
 router.get("/api/leaderboard", async (req, res) => {
   try {
-    const leaderboard = await scoresCollection()
-      .aggregate([
-        { $sort: { wpm: -1, accuracy: -1 } },
-        {
+    const { difficulty } = req.query;
+    const pipeline = [];
+
+    if (difficulty && ["easy", "medium", "hard"].includes(difficulty)) {
+      pipeline.push({ $match: { difficulty } });
+    }
+
+    pipeline.push(
+      { $sort: { wpm: -1, accuracy: -1 } },
+      {
           $group: {
-            _id: "$songTitle",
+            _id: { songTitle: "$songTitle", artist: "$artist" },
             bestScore: { $first: "$$ROOT" },
           },
         },
@@ -98,8 +113,10 @@ router.get("/api/leaderboard", async (req, res) => {
           },
         },
         { $sort: { wpm: -1 } },
-      ])
-      .toArray();
+        { $limit: 10 },
+    );
+
+    const leaderboard = await scoresCollection().aggregate(pipeline).toArray();
     res.json(leaderboard);
   } catch (error) {
     res.status(500).json({ message: "Error fetching leaderboard." });

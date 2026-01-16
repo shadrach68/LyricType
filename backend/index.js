@@ -35,7 +35,7 @@ async function setupSession() {
           process.env.MONGO_URI ||
           "mongodb://localhost:27017/lyrictype-sessions",
       }),
-      cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }, // 1 week
+      cookie: { maxAge: null },
     })
   );
 }

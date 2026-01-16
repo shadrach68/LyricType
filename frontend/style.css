@@ -1419,11 +1419,22 @@ body.light-mode .mobile-notice-card {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     z-index: 100;
     padding: 10px 0;
-    animation: fadeIn 0.2s ease;
   }
 
   .mobile-settings-dropdown.show {
     display: block;
+    animation: dropdownSlideDown 0.3s ease-out forwards;
+  }
+
+  @keyframes dropdownSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .mobile-setting-row {
@@ -1434,8 +1445,18 @@ body.light-mode .mobile-notice-card {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .mobile-setting-row:has(.mobile-theme-options) {
+  #settingsModal .settings-section:has(.theme-selector) {
     display: none;
+  }
+
+  .mobile-theme-options {
+    display: flex;
+    gap: 10px;
+  }
+
+  .mobile-theme-options .btn.active {
+    background-color: var(--primary-color);
+    color: white;
   }
 
   .mobile-dropdown-item {
@@ -2232,4 +2253,18 @@ body.light-mode .lesson-card .lesson-time {
   background: rgba(0, 170, 255, 0.8);
   color: white;
   transform: scale(1.1);
+}
+
+.edit-reply-btn {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 5px;
+  transition: color 0.2s;
+}
+
+.edit-reply-btn:hover {
+  color: var(--primary-color);
 }

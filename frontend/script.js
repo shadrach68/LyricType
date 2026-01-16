@@ -25,6 +25,7 @@ let userCompletionProgress = {
   medium: 0,
   hard: 0,
 };
+let currentLeaderboardFilter = "all";
 
 // --- Audio ---
 const errorSound = new Audio("sounds/error.mp3");
@@ -226,7 +227,17 @@ async function checkSession() {
   try {
     const response = await fetch("/api/session");
     const data = await response.json();
+    const isTabSessionActive = sessionStorage.getItem("lyricTypeSessionActive");
+
     if (data.user) {
+      if (!isTabSessionActive) {
+        // Session exists on server but not in this tab (tab was closed/reopened)
+        await fetch("/api/logout", { method: "POST" });
+        currentUser = null;
+        updateUserUI();
+        return;
+      }
+
       currentUser = data.user;
       trainingProgress = currentUser.trainingProgress || 0;
       applyTheme(currentUser.themePreference); // Apply user's saved theme
@@ -238,6 +249,7 @@ async function checkSession() {
       completedSongTitles = currentUser.completedSongTitles || [];
       updateUserUI();
     } else {
+      sessionStorage.removeItem("lyricTypeSessionActive");
       updateUserUI();
     }
   } catch (error) {
@@ -1548,8 +1560,10 @@ function hideCustomSongModal() {
 
   // Reset edit state
   editingSongId = null;
-  document.querySelector("#customSongModal h2").innerHTML = '<i class="fa-solid fa-music"></i> Add Custom Song';
-  document.getElementById("saveSongBtn").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Song';
+  document.querySelector("#customSongModal h2").innerHTML =
+    '<i class="fa-solid fa-music"></i> Add Custom Song';
+  document.getElementById("saveSongBtn").innerHTML =
+    '<i class="fa-solid fa-floppy-disk"></i> Save Song';
 }
 
 async function saveCustomSong() {
@@ -1668,8 +1682,10 @@ window.editCustomSong = (song) => {
   document.getElementById("customGenre").value = song.genre;
 
   // Update modal UI for editing
-  document.querySelector("#customSongModal h2").innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Custom Song';
-  document.getElementById("saveSongBtn").innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Song';
+  document.querySelector("#customSongModal h2").innerHTML =
+    '<i class="fa-solid fa-pen-to-square"></i> Edit Custom Song';
+  document.getElementById("saveSongBtn").innerHTML =
+    '<i class="fa-solid fa-floppy-disk"></i> Update Song';
 
   showModal("customSongModal");
 };
@@ -1946,6 +1962,7 @@ async function handleLogin() {
     const data = await response.json();
 
     if (response.ok) {
+      sessionStorage.setItem("lyricTypeSessionActive", "true");
       currentUser = data.user;
       completedSongTitles = currentUser.completedSongTitles || [];
       updateUserUI();
@@ -1997,6 +2014,7 @@ async function handleLogout() {
   try {
     hideModal("logoutConfirmModal");
     await fetch("/api/logout", { method: "POST" });
+    sessionStorage.removeItem("lyricTypeSessionActive");
     showNotification("You have been logged out.", "info");
     currentUser = null;
     trainingProgress = 0; // Reset local progress on logout
@@ -2063,6 +2081,7 @@ async function handleResetPassword() {
       );
       hideModal("settingsModal");
       // The backend now handles session destruction. We just need to update the UI.
+      sessionStorage.removeItem("lyricTypeSessionActive");
       currentUser = null;
       trainingProgress = 0;
       completedSongTitles = [];
@@ -2174,6 +2193,7 @@ async function handleDeleteAccount() {
       );
       hideModal("deleteAccountConfirmModal");
       // Effectively log out the user
+      sessionStorage.removeItem("lyricTypeSessionActive");
       currentUser = null;
       trainingProgress = 0;
       completedSongTitles = [];
@@ -2194,7 +2214,9 @@ function updateUserUI() {
   const text = accountBtn.querySelector(".sidebar-text");
 
   const profileBtnContainer = document.getElementById("profileBtnContainer");
-  const genreSelectorContainer = document.getElementById("genreSelectorContainer");
+  const genreSelectorContainer = document.getElementById(
+    "genreSelectorContainer"
+  );
 
   if (currentUser) {
     icon.className = "sidebar-icon fa-solid fa-right-from-bracket";
@@ -2850,10 +2872,51 @@ function handleMobileTabSwitch(e) {
   if (targetTab === "reviews") loadMobileReviews();
 }
 
-async function loadMobileLeaderboard() {
+function setupLeaderboardFilters() {
   const list = document.getElementById("mobileLeaderboardList");
+  if (!list || document.getElementById("leaderboardFilters")) return;
+
+  const container = document.createElement("div");
+  container.id = "leaderboardFilters";
+  container.style.display = "flex";
+  container.style.gap = "8px";
+  container.style.marginBottom = "15px";
+  container.style.justifyContent = "center";
+  container.style.flexWrap = "wrap";
+
+  const filters = ["all", "easy", "medium", "hard"];
+  filters.forEach((filter) => {
+    const btn = document.createElement("button");
+    btn.textContent = filter.charAt(0).toUpperCase() + filter.slice(1);
+    btn.className = `btn btn-sm ${
+      currentLeaderboardFilter === filter ? "btn-primary" : "btn-secondary"
+    }`;
+    btn.onclick = () => {
+      currentLeaderboardFilter = filter;
+      container.querySelectorAll(".btn").forEach((b) => {
+        b.className = "btn btn-sm btn-secondary";
+      });
+      btn.className = "btn btn-sm btn-primary";
+      loadMobileLeaderboard();
+    };
+    container.appendChild(btn);
+  });
+
+  list.parentNode.insertBefore(container, list);
+}
+
+async function loadMobileLeaderboard() {
+  setupLeaderboardFilters();
+  const list = document.getElementById("mobileLeaderboardList");
+  list.innerHTML =
+    '<div class="loading-message"><i class="fa-solid fa-spinner fa-spin"></i> Loading leaderboard...</div>';
+
   try {
-    const res = await fetch("/api/leaderboard");
+    let url = "/api/leaderboard";
+    if (currentLeaderboardFilter && currentLeaderboardFilter !== "all") {
+      url += `?difficulty=${currentLeaderboardFilter}`;
+    }
+    const res = await fetch(url);
     const data = await res.json();
 
     if (data.length === 0) {
@@ -2965,23 +3028,41 @@ async function loadMobileReviews() {
 
     list.innerHTML = data
       .map((item) => {
-        const replyHtml = item.reply
-          ? `
-            <div class="feedback-reply">
-              <div class="reply-header"><i class="fa-solid fa-reply"></i> Admin Response</div>
-              <div class="reply-message">${item.reply}</div>
-            </div>`
-          : "";
+        const isAdmin = currentUser && currentUser.isAdmin;
+        let replySection = "";
 
-        const adminControls =
-          currentUser && currentUser.isAdmin && !item.reply
-            ? `
+        if (item.reply) {
+          replySection = `
+            <div class="feedback-reply" id="reply-display-${item._id}">
+              <div class="reply-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <span><i class="fa-solid fa-reply"></i> Admin Response</span>
+                ${
+                  isAdmin
+                    ? `<button class="edit-reply-btn" onclick="window.toggleEditReply('${item._id}')" title="Edit Reply"><i class="fa-solid fa-pen"></i></button>`
+                    : ""
+                }
+              </div>
+              <div class="reply-message">${item.reply}</div>
+            </div>`;
+
+          if (isAdmin) {
+            replySection += `
+                <div id="edit-reply-form-${item._id}" class="reply-form" style="display:none;">
+                  <textarea id="edit-reply-input-${item._id}" class="form-input reply-textarea">${item.reply}</textarea>
+                  <div style="display:flex; gap:10px; margin-top:5px;">
+                    <button class="btn btn-primary btn-sm" onclick="window.submitReply('${item._id}', true)">Update</button>
+                    <button class="btn btn-secondary btn-sm" onclick="window.toggleEditReply('${item._id}')">Cancel</button>
+                  </div>
+                </div>`;
+          }
+        } else if (isAdmin) {
+          replySection = `
             <button class="reply-btn" onclick="window.toggleReplyForm('${item._id}')">Reply</button>
             <div id="reply-form-${item._id}" class="reply-form">
               <textarea id="reply-input-${item._id}" class="form-input reply-textarea" placeholder="Write a reply..."></textarea>
-              <button class="btn btn-primary btn-sm" onclick="window.submitReply('${item._id}')">Post Reply</button>
-            </div>`
-            : "";
+              <button class="btn btn-primary btn-sm" onclick="window.submitReply('${item._id}', false)">Post Reply</button>
+            </div>`;
+        }
 
         return `
       <div class="feedback-item">
@@ -2990,8 +3071,7 @@ async function loadMobileReviews() {
           <span class="feedback-date">${renderStars(item.rating || 0)}</span>
         </div>
         <div class="feedback-message">${item.message}</div>
-        ${replyHtml}
-        ${adminControls}
+        ${replySection}
         <div style="font-size: 0.75rem; color: #888; margin-top: 5px;">${new Date(
           item.date
         ).toLocaleDateString()}</div>
@@ -3036,8 +3116,23 @@ window.toggleReplyForm = (id) => {
     form.style.display = form.style.display === "none" ? "block" : "none";
 };
 
-window.submitReply = async (id) => {
-  const input = document.getElementById(`reply-input-${id}`);
+window.toggleEditReply = (id) => {
+  const display = document.getElementById(`reply-display-${id}`);
+  const form = document.getElementById(`edit-reply-form-${id}`);
+  if (display && form) {
+    if (form.style.display === "none") {
+      form.style.display = "block";
+      display.style.display = "none";
+    } else {
+      form.style.display = "none";
+      display.style.display = "block";
+    }
+  }
+};
+
+window.submitReply = async (id, isEdit = false) => {
+  const inputId = isEdit ? `edit-reply-input-${id}` : `reply-input-${id}`;
+  const input = document.getElementById(inputId);
   const reply = input.value.trim();
   if (!reply) return;
 
@@ -3048,13 +3143,13 @@ window.submitReply = async (id) => {
       body: JSON.stringify({ reply }),
     });
     if (res.ok) {
-      showNotification("Reply posted!", "success");
+      showNotification(isEdit ? "Reply updated!" : "Reply posted!", "success");
       loadMobileReviews();
     } else {
-      showNotification("Failed to post reply", "error");
+      showNotification("Failed to save reply", "error");
     }
   } catch (e) {
-    showNotification("Error posting reply", "error");
+    showNotification("Error saving reply", "error");
   }
 };
 
